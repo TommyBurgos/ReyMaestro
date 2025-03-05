@@ -1,0 +1,18 @@
+a p{
+    color: #fff;
+}
+.card{
+    background-color: #222;
+    border-radius: 10px;
+    color: #fff;
+}
+.numbers p{
+    color: #eee;
+}
+.numbers h4{
+    color: #80d4ff;
+}
+.card .card-header{
+    background-color: #333;
+    border-radius: 10px;
+}
