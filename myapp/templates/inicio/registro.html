@@ -18,207 +18,79 @@
   <link href="{% static 'paginaWeb/vendor/swiper/swiper-bundle.min.css' %}" rel="stylesheet">
 
   <link href="{% static 'paginaWeb/css/main.css' %}" rel="stylesheet">
+  <link href="{% static 'paginaWeb/css/registro.css' %}" rel="stylesheet">
 </head>
 <body>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">    
     {% include 'inicio/headerWeb.html' %}
-    <div class="container">
-        <div class="contact__wrapper shadow-lg mt-n9">
-            <div class="row no-gutters">
-                <div class="col-lg-5 contact-info__wrapper gradient-brand-color p-5 order-lg-2" style="position: relative; background-color: #1a66fd;">
-                    
-                    
-                </div>
-
-                <div class="col-lg-7 contact-form__wrapper p-5 order-lg-1">
-                    <form action="/registroExitoso/" method="POST" class="contact-form form-validate" novalidate="novalidate">
-                        {% csrf_token %}
-                        <div class="row">
-                            <!--Tipo de identificacion-->
-                            <div class="col-sm-6 mb-4">
-                                <div class="form-group">
-                                    <label class="required-field" for="idType">Tipo de Identificación</label>
-                                    <select class="form-control" id="idType" name="idType">
-                                        <option value="cedula">Cédula</option>
-                                        <option value="pasaporte">Pasaporte</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="col-sm-6 mb-4">
-                                <div class="form-group">
-                                    <label class="required-field" for="idNumber">Número de Identificación</label>
-                                    <input type="number" class="form-control" id="idNumber" name="idNumber" placeholder="Cédula o Pasaporte">
-                                </div>
-                            </div>
-
-                            <!--Primer y segundo nombre-->
-                            <div class="col-sm-6 mb-4">
-                                <div class="form-group">
-                                    <label class="required-field" for="firstName">Nombre</label>
-                                    <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Nombres">
-                                </div>
-                            </div>
-                            
-                            <!--<div class="col-sm-6 mb-4">
-                                <div class="form-group">
-                                    <label for="secondName">Segundo Nombre</label>
-                                    <input type="text" class="form-control" id="secondName" name="secondName" placeholder="Segundo Nombre">
-                                </div>
-                            </div>-->
-
-                            <!-- Apellido Paterno y Apellido Materno -->
-                            <div class="col-sm-6 mb-4">
-                                <div class="form-group">
-                                    <label class="required-field" for="lastName">Apellidos</label>
-                                    <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Apellidos">
-                                </div>
-                            </div><!--
-                            <div class="col-sm-6 mb-4">
-                                <div class="form-group">
-                                    <label for="secondLastName">Apellido Materno</label>
-                                    <input type="text" class="form-control" id="secondLastName" name="secondLastName" placeholder="Apellido Materno">
-                                </div>
-                            </div>-->
-        
-                            <!-- Correo Electrónico y Género -->
-                            <div class="col-sm-6 mb-4">
-                                <div class="form-group">
-                                    <label class="required-field" for="email">Email</label>
-                                    <input type="email" class="form-control" id="email" name="email" placeholder="Correo Electrónico">
-                                </div>
-                            </div>
-                            <div class="col-sm-6 mb-4">
-                                <div class="form-group">
-                                    <label for="gender">Género</label>
-                                    <select class="form-control" id="gender" name="gender">
-                                        <option value="1">Masculino</option>
-                                        <option value="2">Femenino</option>
-                                        <option value="3">Prefiero no decirlo</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <!-- Edad y Teléfono -->
-                            <div class="col-sm-6 mb-4">
-                                <div class="form-group">
-                                    <label for="birthdate">Fecha de Nacimiento</label>
-                                    <input type="date" class="form-control" id="birthdate" name="birthdate">
-                                </div>
-                            </div>
-                            <div class="col-sm-6 mb-4">
-                                <div class="form-group">
-                                    <label for="phone">Teléfono</label>
-                                    <input type="tel" class="form-control" id="phone" name="phone" placeholder="+593">
-                                </div>
-                            </div>
-                        
-                            <!-- Estado Civil y Rol de Usuario 
-                            <div class="col-sm-6 mb-4">
-                                <div class="form-group">
-                                    <label for="maritalStatus">Estado Civil</label>
-                                    <select class="form-control" id="maritalStatus" name="maritalStatus">
-                                        <option value="1">Soltero/a</option>
-                                        <option value="2">Casado/a</option>
-                                        <option value="3">Viudo/a</option>
-                                        <option value="4">Divorciado/a</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-sm-6 mb-4">
-                                <div class="form-group">
-                                    <label for="userRole">Rol de Usuario</label>
-                                    <select class="form-control" id="userRole" name="userRole">
-                                        <option value="1">Administrador</option>
-                                        <option value="2">Doctor</option>
-                                        <option value="3">Paciente</option>
-                                        <option value="4">Familiar</option>
-                                        <option value="5">Invitado</option>
-                                        
-                                    </select>
-                                </div>
-                            </div>-->
-
-                            <!-- Provincia y Ciudad -->
-                            <div class="col-sm-6 mb-4">
-                                <div class="form-group">
-                                    <label for="province">Provincia</label>
-                                    <select class="form-control" id="province" name="province">
-                                        <option value="guayas">Guayas</option>
-                                        <option value="pichincha">Pichincha</option>
-                                        
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-sm-6 mb-4">
-                                <div class="form-group">
-                                    <label for="city">Ciudad</label>
-                                    <select class="form-control" id="city" name="city">
-                                        <option value="guayaquil">Guayaquil</option>
-                                        <option value="quito">Quito</option>
-                                        
-                                    </select>
-                                </div>
-                            </div>
-
-                             <!-- Dirección -->
-                            <div class="col-sm-12 mb-4">
-                                <div class="form-group">
-                                    <label for="address">Dirección</label>
-                                    <input type="text" class="form-control" id="address" name="address" placeholder="Dirección Completa">
-                                </div>
-                            </div>
-
-                            <div class="col-sm-12 mb-4">
-                                <div class="form-group">
-                                    <label class="required-field" for="codPulsera">Codigo Pulsera</label>
-                                    <input type="text" class="form-control" id="codPulsera" name="codPulsera" placeholder="Código Pulsera">
-                                </div>
-                            </div>
-
-                            <!-- Contraseña y Repetir Contraseña (Ajustar IDs y Names) -->
-                            <div class="col-sm-6 mb-4">
-                                <div class="form-group row">
-                                    <label for="password">Contraseña</label>
-                                    <div class="col-sm-11">
-                                        <input type="password" class="form-control" id="password" name="password" placeholder="Contraseña">
-                                    </div>
-                                    <div class="col-sm-1">
-                                        <span class="toggle-password" onclick="togglePasswordVisibility()">👁️</span>
-                                    </div>
-                                    
-                                    {% if errorP %}
-                                        <p style="color: red;">{{ errorP }}</p>
-                                    {% endif %}   
-                                                                     
-                                </div>
-                            </div>
-                            <div class="col-sm-6 mb-4">
-                                <div class="form-group row">
-
-                                    <label for="confirmPassword">Repetir Contraseña</label>
-                                    <div class="col-sm-9">
-                                        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Repetir Contraseña">
-                                    </div>
-                                    <div class="col-sm-1">
-                                        <span class="toggle-password2" onclick="togglePasswordVisibility2()">👁️</span>
-                                    </div>
-                                                                        
-                                </div>
-                            </div>
-
-                            <!-- Botón de Registro -->
-                            <div class="col-sm-12 mb-4">
-                                <button style="width: 50%; position: relative; left: 25%;" type="submit" name="submit" class="btn btn-primary">Registrarme</button>
-                            </div>
-        
-                        </div>
-                    </form>
-                </div>
-                <!-- End Contact Form Wrapper -->        
-            </div>
+    <br><br><br>
+    <br><br><br>
+    <div class="register-container">
+        <!-- Sección de Información -->
+        <div class="info-section">
+            <img src="{% static 'img/logoReyMaestro3.png' %}" alt="Logo">
+            <h3>Academia Rey Maestro</h3>
+            <p>Únete y mejora tu estrategia de ajedrez con los mejores cursos.</p>
         </div>
-</div>
+
+        <!-- Sección de Formulario -->
+        <div class="form-section">
+            <h2 class="text-center mb-4">Registro</h2>
+
+            <form action="/registroExitoso/" method="POST" class="contact-form form-validate" novalidate="novalidate">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Correo</label>
+                        <input type="email" class="form-control" placeholder="Ingrese su correo">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Celular</label>
+                        <input type="tel" class="form-control" placeholder="Ingrese su número">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Nombre</label>
+                        <input type="text" class="form-control" placeholder="Ingrese su nombre">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Apellido</label>
+                        <input type="text" class="form-control" placeholder="Ingrese su apellido">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Fecha de Nacimiento</label>
+                        <input type="date" class="form-control">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Pais</label>
+                        <select class="form-control" id="provincia">
+                            <option value="">Seleccione una provincia</option>
+                            <option value="Ecuador">Ecuador</option>
+                            <option value="Argentina">Argentina</option>
+                            <option value="México">México</option>
+                            <option value="Colombia">Colombia</option>
+                            <option value="Chile">Chile</option>
+                            <option value="Perú">Perú</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Ciudad</label>
+                        <select class="form-control">
+                            <option value="">Seleccione una ciudad</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Contraseña</label>
+                        <input type="password" class="form-control" placeholder="Ingrese su contraseña">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Repetir Contraseña</label>
+                        <input type="password" class="form-control" placeholder="Repita su contraseña">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-custom mt-3">Registrarse</button>
+            </form>
+        </div>
+    </div>
 
 <script src="  {% static 'paginaWeb/js/main.js' %}"></script>
 </body>

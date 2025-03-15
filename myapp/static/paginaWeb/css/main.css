@@ -30,7 +30,9 @@ section div h2,p,h5,ul{
 div p{
   color: #fff;
 }
-
+.pricing-item ul li{
+  color: #111;
+}
 
 .escuela-card {
   background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.1));
@@ -1138,7 +1140,7 @@ section,
 
 .features .features-item p {
   font-size: 15px;
-  color: color-mix(in srgb, var(--default-color), transparent 20%);
+  color: #fff;
   margin: 0;
 }
 

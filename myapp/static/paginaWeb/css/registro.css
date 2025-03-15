@@ -1,0 +1,62 @@
+body {    
+    display: flex;
+    justify-content: center;  /* Centra horizontalmente */
+    align-items: center;      /* Centra verticalmente */
+    height: 100vh;            /* Ocupa el 100% de la pantalla */
+    margin: 0;                /* Elimina márgenes para evitar espacios no deseados */
+    min-height: 90vh;  /* Asegura que haya suficiente espacio */
+    padding-top: 30px; /* Baja el contenido */
+}
+
+
+/* Tarjeta contenedora */
+.register-container {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    display: flex;
+    width: 60%;
+    max-height: 85vh;  /* Máxima altura sin cortar */
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+        
+
+}
+
+/* Lado izquierdo (Formulario) */
+.form-section {
+    width: 70%;    
+    padding: 40px;
+    overflow-y: auto;
+}
+
+/* Lado derecho (Logo e información) */
+.info-section {
+    width: 30%; 
+    background: #4b0082;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+}
+
+.info-section h3{
+    color: #ded903
+}
+.info-section img {
+    width: 80px;
+    margin-bottom: 15px;
+}
+
+/* Botón bonito */
+.btn-custom {
+    background: #6a0dad;
+    color: white;
+    width: 100%;
+}
+
+.btn-custom:hover {
+    background: #4b0082;
+}

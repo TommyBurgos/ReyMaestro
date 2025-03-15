@@ -28,6 +28,8 @@
   <!-- Main CSS File -->
   <link href="{% static 'paginaWeb/css/main.css' %}" rel="stylesheet">
 
+  <link href="{% static 'css/chatbot.css' %}" rel="stylesheet">
+
   <!-- =======================================================
   * Template Name: KnightOne
   * Template URL: https://bootstrapmade.com/knight-simple-one-page-bootstrap-template/
@@ -35,6 +37,8 @@
   * Author: BootstrapMade.com
   * License: https://bootstrapmade.com/license/
   ======================================================== -->
+
+    
 </head>
 
 <body class="index-page">
@@ -53,7 +57,7 @@
         <h2 data-aos="fade-up" data-aos-delay="100">Academia Rey Maestro</h2>
         <p data-aos="fade-up" data-aos-delay="200">¡Despierta la pasión por el ajedrez en tus hijos!</p>
         <div data-aos="fade-up" data-aos-delay="300">
-          <a href="https://www.youtube.com/watch?v=Y7f98aduVJ8" class="glightbox pulsating-play-btn"></a>
+          <a href="https://www.youtube.com/watch?v=_XAzOaFtxCk&ab_channel=AprendeconRey" class="glightbox pulsating-play-btn"></a>
         </div>
       </div>
 
@@ -125,50 +129,50 @@
         <div class="row row-cols-1 row-cols-md-4 g-4">
             <div class="col">
                 <div class="escuela-card p-3">
-                    <img src="https://cdn-icons-png.flaticon.com/512/2721/2721272.png" alt="IA" class="escuela-icon">
-                    <h5 class="escuela">Data Science e Inteligencia Artificial</h5>
+                    <img src="{% static 'paginaWeb/img/chess-player.png' %}" alt="IA" class="escuela-icon">
+                    <h5 class="escuela">Aprendiendo desde cero</h5>
                 </div>
             </div>
             <div class="col">
                 <div class="escuela-card p-3">
-                    <img src="https://cdn-icons-png.flaticon.com/512/3065/3065766.png" alt="Ciberseguridad" class="escuela-icon">
-                    <h5 class="escuela">Ciberseguridad</h5>
+                    <img src="{% static 'paginaWeb/img/chess-game2.png' %}" alt="Ciberseguridad" class="escuela-icon">
+                    <h5 class="escuela">Aperturas</h5>
                 </div>
             </div>
             <div class="col">
                 <div class="escuela-card p-3">
-                    <img src="https://cdn-icons-png.flaticon.com/512/875/875543.png" alt="Liderazgo" class="escuela-icon">
-                    <h5 class="escuela">Liderazgo y Management</h5>
+                    <img src="{% static 'paginaWeb/img/strategy.png' %}" alt="Liderazgo" class="escuela-icon">
+                    <h5 class="escuela">Tacticas y movimientos</h5>
                 </div>
             </div>
             <div class="col">
                 <div class="escuela-card p-3">
-                    <img src="https://cdn-icons-png.flaticon.com/512/2716/2716373.png" alt="English Academy" class="escuela-icon">
-                    <h5 class="escuela">English Academy</h5>
+                    <img src="{% static 'paginaWeb/img/game.png' %}" alt="English Academy" class="escuela-icon">
+                    <h5 class="escuela">Blitz Chess</h5>
                 </div>
             </div>
             <div class="col">
                 <div class="escuela-card p-3">
-                    <img src="https://cdn-icons-png.flaticon.com/512/1087/1087976.png" alt="Desarrollo Web" class="escuela-icon">
-                    <h5 class="escuela">Desarrollo Web</h5>
+                    <img src="{% static 'paginaWeb/img/chessboard.png' %}" alt="Desarrollo Web" class="escuela-icon">
+                    <h5 class="escuela">Ajedréz Ludico</h5>
                 </div>
             </div>
             <div class="col">
                 <div class="escuela-card p-3">
-                    <img src="https://cdn-icons-png.flaticon.com/512/2641/2641457.png" alt="Marketing" class="escuela-icon">
-                    <h5 class="escuela">Marketing Digital</h5>
+                    <img src="{% static 'paginaWeb/img/chess-game.png' %}" alt="Marketing" class="escuela-icon">
+                    <h5 class="escuela">Nivel Intermedio</h5>
                 </div>
             </div>
             <div class="col">
                 <div class="escuela-card p-3">
-                    <img src="{% static 'paginaWeb/img/esc1.webp' %}" alt="Producto" class="escuela-icon">
-                    <h5 class="escuela">Producto</h5>
+                    <img src="{% static 'paginaWeb/img/chess2.png' %}" alt="Producto" class="escuela-icon">
+                    <h5 class="escuela">Torneos de nivel</h5>
                 </div>
             </div>
             <div class="col">
                 <div class="escuela-card p-3">
-                    <img src="https://cdn-icons-png.flaticon.com/512/2354/2354561.png" alt="Transformación Digital" class="escuela-icon">
-                    <h5 class="escuela">Transformación Digital</h5>
+                    <img src="{% static 'paginaWeb/img/chess.png' %}" alt="Transformación Digital" class="escuela-icon">
+                    <h5 class="escuela">Ser un master</h5>
                 </div>
             </div>
         </div>
@@ -249,7 +253,7 @@
         <div class="row" data-aos="zoom-in" data-aos-delay="100">
           <div class="col-xl-9 text-center text-xl-start">
             <h3>Contactanos ahora</h3>
-            <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <p>Envianos un mensaje vía correo o WhatsApp y te responderemos lo antes posible.</p>
           </div>
           <div class="col-xl-3 cta-btn-container text-center">
             <a class="cta-btn align-middle" href="#">Call To Action</a>
@@ -274,32 +278,45 @@
             <div class="features-item d-flex ps-0 ps-lg-3 pt-4 pt-lg-0" data-aos="fade-up" data-aos-delay="200">
               <i class="bi bi-archive flex-shrink-0"></i>
               <div>
-                <h4>Est labore ad</h4>
-                <p>Consequuntur sunt aut quasi enim aliquam quae harum pariatur laboris nisi ut aliquip</p>
+                <h4>✅ Aprende desde cero hasta nivel máster:</h4>
+                <p>Adaptamos nuestras clases a cada nivel, desde principiantes hasta jugadores avanzados.
+
+                </p>
               </div>
             </div><!-- End Features Item-->
 
             <div class="features-item d-flex mt-5 ps-0 ps-lg-3" data-aos="fade-up" data-aos-delay="300">
               <i class="bi bi-basket flex-shrink-0"></i>
               <div>
-                <h4>Harum esse qui</h4>
-                <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt</p>
+                <h4>✅ Método estructurado y progresivo: </h4>
+                <p>Nuestro programa cubre aperturas, medio juego, finales, estrategia y tácticas de manera organizada.
+
+                </p>
               </div>
             </div><!-- End Features Item-->
 
             <div class="features-item d-flex mt-5 ps-0 ps-lg-3" data-aos="fade-up" data-aos-delay="400">
               <i class="bi bi-broadcast flex-shrink-0"></i>
               <div>
-                <h4>Aut occaecati</h4>
-                <p>Aut suscipit aut cum nemo deleniti aut omnis. Doloribus ut maiores omnis facere</p>
+                <h4>✅ Beneficios más allá del tablero: </h4>
+                <p>Mejora la concentración, la toma de decisiones y la resolución de problemas.
+
+                </p>
               </div>
             </div><!-- End Features Item-->
 
             <div class="features-item d-flex mt-5 ps-0 ps-lg-3" data-aos="fade-up" data-aos-delay="500">
               <i class="bi bi-camera-reels flex-shrink-0"></i>
               <div>
-                <h4>Beatae veritatis</h4>
-                <p>Expedita veritatis consequuntur nihil tempore laudantium vitae denat pacta</p>
+                <h4>✅ Simulaciones de torneos: </h4>
+                <p>Prepárate para competir con confianza en eventos locales e internacionales.</p>
+              </div>
+            </div><!-- End Features Item-->
+            <div class="features-item d-flex mt-5 ps-0 ps-lg-3" data-aos="fade-up" data-aos-delay="500">
+              <i class="bi bi-camera-reels flex-shrink-0"></i>
+              <div>
+                <h4>✅ Flexibilidad horaria y clases online: </h4>
+                <p>Aprende a tu ritmo con opciones presenciales y virtuales.</p>
               </div>
             </div><!-- End Features Item-->
 
@@ -312,7 +329,7 @@
     </section><!-- /Features Section -->
 
     <!-- Clients Section -->
-    <section id="clients" class="clients section">
+    <!--<section id="clients" class="clients section">
 
       <div class="container" data-aos="fade-up" data-aos-delay="100">
         <h2>Asociados</h2>
@@ -320,41 +337,41 @@
 
           <div class="col-xl-3 col-md-4 client-logo">
             <img src="{% static 'paginaWeb/img/asociados1.png' %}" class="img-fluid" alt="">
-          </div><!-- End Client Item -->
-
+          </div>--><!-- End Client Item -->
+          <!--
           <div class="col-xl-3 col-md-4 client-logo">
             <img src="{% static 'paginaWeb/img/asociado2.png' %}" class="img-fluid" alt="">
-          </div><!-- End Client Item -->
-
+          </div>--><!-- End Client Item -->
+          <!--
           <div class="col-xl-3 col-md-4 client-logo">
             <img src="{% static 'paginaWeb/runachay.png' %}" class="img-fluid" alt="">
-          </div><!-- End Client Item -->
-
+          </div>--><!-- End Client Item -->
+          <!--
           <div class="col-xl-3 col-md-4 client-logo">
             <img src="{% static 'paginaWeb/img/asociado2.png' %}" class="img-fluid" alt="">
-          </div><!-- End Client Item -->
-
+          </div>--><!-- End Client Item -->
+          <!--
           <div class="col-xl-3 col-md-4 client-logo">
             <img src="{% static 'paginaWeb/img/asociados1.png' %}" class="img-fluid" alt="">
-          </div><!-- End Client Item -->
-
+          </div>--><!-- End Client Item -->
+          <!--
           <div class="col-xl-3 col-md-4 client-logo">
             <img src="{% static 'paginaWeb/img/asociado2.png' %}" class="img-fluid" alt="">
-          </div><!-- End Client Item -->
-
+          </div>--><!-- End Client Item -->
+          <!--
           <div class="col-xl-3 col-md-4 client-logo">
             <img src="{% static 'paginaWeb/img/asociados1.png' %}" class="img-fluid" alt="">
-          </div><!-- End Client Item -->
-
+          </div>--><!-- End Client Item -->
+          <!--
           <div class="col-xl-3 col-md-4 client-logo">
             <img src="{% static 'paginaWeb/img/asociado2.png' %}" class="img-fluid" alt="">
-          </div><!-- End Client Item -->
-
+          </div>--><!-- End Client Item -->
+<!--
         </div>
 
       </div>
 
-    </section><!-- /Clients Section -->
+    </section>--><!-- /Clients Section -->
 
     <!-- Stats Section -->
     <section id="stats" class="stats section dark-background">
@@ -410,7 +427,7 @@
       <!-- Section Title -->
       <div class="container section-title" data-aos="fade-up">
         <h2>Nuestros cursos</h2>
-        <p>Busca acorde a tu preferencia o nivel</p>
+        <p style="color: #eee;">Busca acorde a tu preferencia o nivel</p>
       </div><!-- End Section Title -->
 
       <div class="container">
@@ -419,15 +436,15 @@
 
           <ul class="portfolio-filters isotope-filters" data-aos="fade-up" data-aos-delay="100">
             <li data-filter="*" class="filter-active">Todos</li>
-            <li data-filter=".filter-app">Inicial</li>
-            <li data-filter=".filter-product">Intermedio</li>
-            <li data-filter=".filter-branding">Avanzado</li>
+            <li data-filter=".filter-inicial">Inicial</li>
+            <li data-filter=".filter-intermedio">Intermedio</li>
+            <li data-filter=".filter-avanzado">Avanzado</li>
           </ul><!-- End Portfolio Filters -->
 
           <div class="row gy-4 isotope-container" data-aos="fade-up" data-aos-delay="200">
 
-            <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-app">
-              <img src="{% static 'paginaWeb/img/asociados1.png' %}" class="img-fluid" alt="">
+            <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-inicial">
+              <img src="{% static 'paginaWeb/img/cursoInicial.jpg' %}" class="img-fluid" alt="">
               <div class="portfolio-info">
                 <h4>App 1</h4>
                 <p>Lorem ipsum, dolor sit</p>
@@ -436,8 +453,8 @@
               </div>
             </div><!-- End Portfolio Item -->
 
-            <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-product">
-              <img src="{% static 'paginaWeb/img/asociados1.png' %}" class="img-fluid" alt="">
+            <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-intermedio">
+              <img src="{% static 'paginaWeb/img/cursoIntermedio.png' %}" class="img-fluid" alt="">
               <div class="portfolio-info">
                 <h4>Product 1</h4>
                 <p>Lorem ipsum, dolor sit</p>
@@ -446,8 +463,8 @@
               </div>
             </div><!-- End Portfolio Item -->
 
-            <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-branding">
-              <img src="{% static 'paginaWeb/img/asociados1.png' %}" class="img-fluid" alt="">
+            <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-avanzado">
+              <img src="{% static 'paginaWeb/img/cursoAvanzado2.avif' %}" class="img-fluid" alt="">
               <div class="portfolio-info">
                 <h4>Branding 1</h4>
                 <p>Lorem ipsum, dolor sit</p>
@@ -456,8 +473,8 @@
               </div>
             </div><!-- End Portfolio Item -->
 
-            <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-app">
-              <img src="{% static 'paginaWeb/img/asociado2.png' %}" class="img-fluid" alt="">
+            <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-inicial">
+              <img src="{% static 'paginaWeb/img/cursoInicial2.jpg' %}" class="img-fluid" alt="">
               <div class="portfolio-info">
                 <h4>App 2</h4>
                 <p>Lorem ipsum, dolor sit</p>
@@ -466,8 +483,8 @@
               </div>
             </div><!-- End Portfolio Item -->
 
-            <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-product">
-              <img src="{% static 'paginaWeb/img/asociado2.png' %}" class="img-fluid" alt="">
+            <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-intermedio">
+              <img src="{% static 'paginaWeb/img/cursoIntermedio3.jpg' %}" class="img-fluid" alt="">
               <div class="portfolio-info">
                 <h4>Product 2</h4>
                 <p>Lorem ipsum, dolor sit</p>
@@ -476,8 +493,8 @@
               </div>
             </div><!-- End Portfolio Item -->
 
-            <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-branding">
-              <img src="{% static 'paginaWeb/img/asociados2.png' %}" class="img-fluid" alt="">
+            <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-avanzado">
+              <img src="{% static 'paginaWeb/img/cursoAvanzado.png' %}" class="img-fluid" alt="">
               <div class="portfolio-info">
                 <h4>Branding 2</h4>
                 <p>Lorem ipsum, dolor sit</p>
@@ -486,8 +503,8 @@
               </div>
             </div><!-- End Portfolio Item -->
 
-            <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-app">
-              <img src="{% static 'paginaWeb/img/asociados1.png' %}" class="img-fluid" alt="">
+            <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-inicial">
+              <img src="{% static 'paginaWeb/img/cursoInicial3.jpg' %}" class="img-fluid" alt="">
               <div class="portfolio-info">
                 <h4>App 3</h4>
                 <p>Lorem ipsum, dolor sit</p>
@@ -496,8 +513,8 @@
               </div>
             </div><!-- End Portfolio Item -->
 
-            <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-product">
-              <img src="{% static 'paginaWeb/img/asociados1.png' %}" class="img-fluid" alt="">
+            <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-intermedio">
+              <img src="{% static 'paginaWeb/img/cursoIntermedio2.jpg' %}" class="img-fluid" alt="">
               <div class="portfolio-info">
                 <h4>Product 3</h4>
                 <p>Lorem ipsum, dolor sit</p>
@@ -506,8 +523,8 @@
               </div>
             </div><!-- End Portfolio Item -->
 
-            <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-branding">
-              <img src="{% static 'paginaWeb/img/asociado2.png' %}" class="img-fluid" alt="">
+            <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-avanzado">
+              <img src="{% static 'paginaWeb/img/cursoAvanzado3.jpg' %}" class="img-fluid" alt="">
               <div class="portfolio-info">
                 <h4>Branding 3</h4>
                 <p>Lorem ipsum, dolor sit</p>
@@ -529,8 +546,8 @@
 
       <!-- Section Title -->
       <div class="container section-title" data-aos="fade-up">
-        <h2>Pricing</h2>
-        <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
+        <h2>Precios</h2>
+        <h4 style="color: #ccc;">Escoge el que mejor se ajuste a ti</h4>
       </div><!-- End Section Title -->
 
       <div class="container">
@@ -539,35 +556,35 @@
 
           <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
             <div class="pricing-item">
-              <h3>Free</h3>
-              <h4><sup>$</sup>0<span> / month</span></h4>
-              <ul>
-                <li>Aida dere</li>
-                <li>Nec feugiat nisl</li>
-                <li>Nulla at volutpat dola</li>
-                <li class="na">Pharetra massa</li>
-                <li class="na">Massa ultricies mi</li>
+              <h3>Gratuito</h3>
+              <h4><sup>$</sup>0<span> / mensual</span></h4>
+              <ul>                
+                <li>Acceso a Cursos básicos</li>
+                <li class="na">Acceso ilimitado a contenido</li>
+                <li class="na">Acceso a la comunidad</li>
+                <li class="na">Acceso a torneos semanales</li>
+                <li class="na">Clases personalizadas</li>
               </ul>
               <div class="btn-wrap">
-                <a href="#" class="btn-buy">Buy Now</a>
+                <a href="#" class="btn-buy">Comprar ahora</a>
               </div>
             </div>
           </div><!-- End Pricing Item -->
 
           <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
             <div class="pricing-item recommended">
-              <span class="recommended-badge">Recommended</span>
+              <span class="recommended-badge">Recomendado</span>
               <h3>Business</h3>
-              <h4><sup>$</sup>19<span> / month</span></h4>
+              <h4><sup>$</sup>15<span> / mensual</span></h4>
               <ul>
-                <li>Aida dere</li>
-                <li>Nec feugiat nisl</li>
-                <li>Nulla at volutpat dola</li>
-                <li>Pharetra massa</li>
-                <li class="na">Massa ultricies mi</li>
+                <li>Acceso a Cursos básicos</li>
+                <li>Acceso ilimitado a contenido</li>
+                <li class="na">Acceso a la comunidad</li>
+                <li class="na">Acceso a torneos semanales</li>
+                <li class="na">Clases personalizadas</li>
               </ul>
               <div class="btn-wrap">
-                <a href="#" class="btn-buy">Buy Now</a>
+                <a href="#" class="btn-buy">Comprar ahora</a>
               </div>
             </div>
           </div><!-- End Pricing Item -->
@@ -575,16 +592,16 @@
           <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
             <div class="pricing-item">
               <h3>Developer</h3>
-              <h4><sup>$</sup>29<span> / month</span></h4>
+              <h4><sup>$</sup>25<span> / Mensual</span></h4>
               <ul>
-                <li>Aida dere</li>
-                <li>Nec feugiat nisl</li>
-                <li>Nulla at volutpat dola</li>
-                <li>Pharetra massa</li>
-                <li>Massa ultricies mi</li>
+                <li>Acceso a Cursos básicos</li>
+                <li>Acceso ilimitado a contenido</li>
+                <li>Acceso a la comunidad</li>
+                <li>Acceso a torneos semanales</li>
+                <li>Clases personalizadas</li>
               </ul>
               <div class="btn-wrap">
-                <a href="#" class="btn-buy">Buy Now</a>
+                <a href="#" class="btn-buy">Comprar ahora</a>
               </div>
             </div>
           </div><!-- End Pricing Item -->
@@ -605,37 +622,34 @@
           <div class="col-lg-7 d-flex flex-column justify-content-center order-2 order-lg-1">
 
             <div class="content px-xl-5" data-aos="fade-up" data-aos-delay="100">
-              <h3><span>Frequently Asked </span><strong>Questions</strong></h3>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Duis aute irure dolor in reprehenderit
-              </p>
+              <h3><strong>Preguntas frecuentes </strong></h3>              
             </div>
 
             <div class="faq-container px-xl-5" data-aos="fade-up" data-aos-delay="200">
 
               <div class="faq-item faq-active">
                 <i class="faq-icon bi bi-question-circle"></i>
-                <h3>Non consectetur a erat nam at lectus urna duis?</h3>
+                <h3>Existe una edad máxima para inscribirme?</h3>
                 <div class="faq-content">
-                  <p>Feugiat pretium nibh ipsum consequat. Tempus iaculis urna id volutpat lacus laoreet non curabitur gravida. Venenatis lectus magna fringilla urna porttitor rhoncus dolor purus non.</p>
+                  <p style="color: #121212;">No, aunque nuestros cursos están pensados para un publico más joven no existe realmente un limite para inscribirse a nuestros cursos</p>
                 </div>
                 <i class="faq-toggle bi bi-chevron-right"></i>
               </div><!-- End Faq item-->
 
               <div class="faq-item">
                 <i class="faq-icon bi bi-question-circle"></i>
-                <h3>Feugiat scelerisque varius morbi enim nunc faucibus a pellentesque?</h3>
+                <h3>Las clases son presenciales?</h3>
                 <div class="faq-content">
-                  <p>Dolor sit amet consectetur adipiscing elit pellentesque habitant morbi. Id interdum velit laoreet id donec ultrices. Fringilla phasellus faucibus scelerisque eleifend donec pretium. Est pellentesque elit ullamcorper dignissim. Mauris ultrices eros in cursus turpis massa tincidunt dui.</p>
+                  <p style="color: #121212;">Por el momento nuestras clases son en modalidad virtual, aunque solemos realizar torneos en forma presencial en el cual competimos con otros deportistas del pais o incluso de distintas partes del mundo.</p>
                 </div>
                 <i class="faq-toggle bi bi-chevron-right"></i>
               </div><!-- End Faq item-->
 
               <div class="faq-item">
                 <i class="faq-icon bi bi-question-circle"></i>
-                <h3>Dolor sit amet consectetur adipiscing elit pellentesque?</h3>
+                <h3>Si no puedo entrar a alguna clase, puedo recuperarla?</h3>
                 <div class="faq-content">
-                  <p>Eleifend mi in nulla posuere sollicitudin aliquam ultrices sagittis orci. Faucibus pulvinar elementum integer enim. Sem nulla pharetra diam sit amet nisl suscipit. Rutrum tellus pellentesque eu tincidunt. Lectus urna duis convallis convallis tellus. Urna molestie at elementum eu facilisis sed odio morbi quis</p>
+                  <p style="color: #121212;">Aprovechamos al máximo la virtualidad por lo que grabamos cada sesión de clase y estas podrán ser encontradas dentro de una sescción de la plataforma que usamos <strong><a href="https://reymaestro.runacode.com/public/">RUNACHAY</a></strong></p>
                 </div>
                 <i class="faq-toggle bi bi-chevron-right"></i>
               </div><!-- End Faq item-->
@@ -653,15 +667,16 @@
 
     </section><!-- /Faq Section -->
 
-    <!-- Contact Section -->
-    <section id="contact" class="contact section light-background">
+    <!-- Contact Section 
+    <section id="contact" class="contact section light-background">-->
 
-      <!-- Section Title -->
+      <!-- Section Title 
       <div class="container section-title" data-aos="fade-up">
         <h2>Contact</h2>
         <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
-      </div><!-- End Section Title -->
-
+      </div>
+      End Section Title -->
+      <!--
       <div class="container" data-aos="fade" data-aos-delay="100">
 
         <div class="row gy-4">
@@ -673,24 +688,24 @@
                 <h3>Address</h3>
                 <p>A108 Adam Street, New York, NY 535022</p>
               </div>
-            </div><!-- End Info Item -->
-
+            </div>--><!-- End Info Item -->
+<!--
             <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="300">
               <i class="bi bi-telephone flex-shrink-0"></i>
               <div>
                 <h3>Call Us</h3>
                 <p>+1 5589 55488 55</p>
               </div>
-            </div><!-- End Info Item -->
-
+            </div>--><!-- End Info Item -->
+<!--
             <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="400">
               <i class="bi bi-envelope flex-shrink-0"></i>
               <div>
                 <h3>Email Us</h3>
                 <p>info@example.com</p>
               </div>
-            </div><!-- End Info Item -->
-
+            </div>--><!-- End Info Item -->
+<!--
           </div>
 
           <div class="col-lg-8">
@@ -723,20 +738,20 @@
 
               </div>
             </form>
-          </div><!-- End Contact Form -->
-
+          </div>--><!-- End Contact Form -->
+<!--
         </div>
 
       </div>
 
-    </section><!-- /Contact Section -->
+    </section>--><!-- /Contact Section -->
 
   </main>
 
   <footer id="footer" class="footer dark-background">
     <div class="container">
-      <h3 class="sitename">KnightOne</h3>
-      <p>Et aut eum quis fuga eos sunt ipsa nihil. Labore corporis magni eligendi fuga maxime saepe commodi placeat.</p>
+      <h3 class="sitename">Academia REY MAESTRO</h3>
+      <p>¡Despierta la pasión por el ajedrez!</p>
       <div class="social-links d-flex justify-content-center">
         <a href=""><i class="bi bi-twitter-x"></i></a>
         <a href=""><i class="bi bi-facebook"></i></a>
@@ -746,14 +761,14 @@
       </div>
       <div class="container">
         <div class="copyright">
-          <span>Copyright</span> <strong class="px-1 sitename">KnightOne</strong> <span>All Rights Reserved</span>
+          <span>Copyright</span> <strong class="px-1 sitename">Rey Maestro</strong> <span>RTodos los derechos reservados</span>
         </div>
         <div class="credits">
           <!-- All the links in the footer should remain intact. -->
           <!-- You can delete the links only if you've purchased the pro version. -->
           <!-- Licensing information: https://bootstrapmade.com/license/ -->
           <!-- Purchase the pro version with working PHP/AJAX contact form: [buy-url] -->
-          Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a> Distributed by <a href=“https://themewagon.com>ThemeWagon
+          Adapatado de <a href="https://bootstrapmade.com/">BootstrapMade</a> Distributed by <a href=“https://themewagon.com>ThemeWagon
         </div>
       </div>
     </div>
@@ -771,7 +786,7 @@
   </a>
 
   <!-- Vendor JS Files -->
-  {% static 'paginaWeb/img/favicon.png' %}
+  
   <script src="{% static 'paginaWeb/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
   <script src="{% static 'paginaWeb/vendor/php-email-form/validate.js' %}"></script>
   <script src="{% static 'paginaWeb/vendor/aos/aos.js' %}"></script>
@@ -783,6 +798,59 @@
 
   <!-- Main JS File -->
   <script src="  {% static 'paginaWeb/js/main.js' %}"></script>
+
+  <!-- Botón flotante -->
+<!-- Botón flotante del chatbot con imagen de robot -->
+<button class="chatbot-btn" onclick="toggleChatbot()">
+  <img src="{% static 'img/robot-icon.png' %}" alt="Chatbot">
+</button>
+
+
+<!-- Contenedor del chatbot -->
+<div class="chatbot-container" id="chatbot">
+    <div class="chat-header">Chatbot</div>
+    <div class="chat-messages" id="chat-messages"></div>
+    <div class="chat-input">
+        <input type="text" id="user-input" placeholder="Escribe un mensaje..." />
+        <button onclick="sendMessage()">Enviar</button>
+    </div>
+</div>
+
+<!-- Script del chatbot -->
+<script>
+    function toggleChatbot() {
+        const chatbot = document.getElementById("chatbot");
+        chatbot.style.display = chatbot.style.display === "none" ? "flex" : "none";
+    }
+
+    function sendMessage() {
+        const userInput = document.getElementById("user-input");
+        const message = userInput.value.trim();
+        if (!message) return;
+
+        // Mostrar mensaje del usuario en la ventana de chat
+        const chatMessages = document.getElementById("chat-messages");
+        chatMessages.innerHTML += `<div><strong>Tú:</strong> ${message}</div>`;
+
+        // Enviar al backend
+        fetch("/api/chatbot/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.reply) {
+                chatMessages.innerHTML += `<div><strong>Chatbot:</strong> ${data.reply}</div>`;
+            }
+        })
+        .catch(error => console.error("Error:", error));
+
+        userInput.value = "";
+    }
+</script>
+
+
 
 </body>
 
