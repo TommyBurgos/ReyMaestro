@@ -12,6 +12,7 @@ body {
 /* Tarjeta contenedora */
 .register-container {
     background: white;
+    flex-direction: row; /* Por defecto en computadoras, se mostrarán lado a lado */
     border-radius: 15px;
     overflow: hidden;
     display: flex;
@@ -59,4 +60,23 @@ body {
 
 .btn-custom:hover {
     background: #4b0082;
+}
+
+
+/* 🔹 Ajuste para móviles: Cambia a diseño vertical */
+@media (max-width: 768px) {
+    .register-container {
+        flex-direction: column; /* Se apilan verticalmente */
+        width: 100%;
+    }
+
+    .info-section {
+        width: 100%; /* Ocupa todo el ancho en móviles */
+        padding: 30px;
+    }
+
+    .form-section {
+        width: 100%;
+        padding: 20px;
+    }
 }
