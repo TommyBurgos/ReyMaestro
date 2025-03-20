@@ -36,24 +36,26 @@
 
       <!--menu login-->
       <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
-        <div class="offcanvas-header">
-          <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">Inicio de sesión</h5>
-          <h5><i style="color: yellow; margin-left: 10px;" class="bi bi-trophy"></i></h5>
-          
+        <div class="offcanvas-header d-flex justify-content-between align-items-center">
+          <div class="d-flex justify-content-center align-items-center w-100">
+            <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">Inicio de sesión</h5>
+            <h5 style="margin-left: 10px;"><i style="color: yellow;" class="bi bi-trophy"></i></h5>
+          </div>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
+        </div>        
         <div class="offcanvas-body">          
-          <form >
+          <form action="/inicio/" method="POST" class="contact-form form-validate" novalidate="novalidate">
+            {% csrf_token %}
             <div class="mb-3">
               <label for="exampleFormControlInput1" class="form-label">Email address</label>
-              <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com">
+              <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com" name="email">
             </div>
             <label for="inputPassword5" class="form-label">Password</label>
-            <input type="password" id="inputPassword5" class="form-control" aria-describedby="passwordHelpBlock">            
+            <input type="password" id="inputPassword5" class="form-control" aria-describedby="passwordHelpBlock" name="password">            
             <div id="passwordHelpBlock" class="form-text" style="color: #eee;">
               La contraseña debe de tener entre 8 y 20 caracteres, no uses emojis
             </div>
-            <button class="btn btn-success" type="submit">Search</button>
+            <button class="btn btn-success" type="submit"> Iniciar sesión</button>
           </form>
         </div>
       </div>
