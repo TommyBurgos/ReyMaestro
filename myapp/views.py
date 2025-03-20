@@ -1,4 +1,11 @@
 from django.shortcuts import render, HttpResponse
+from django.contrib.auth import login, logout, authenticate
+from user.models import User, Rol, TipoUsuario
+from django.db.models import Q
+import re
+
+from .permissions import role_required
+
 
 #FUNCIONES ADICIONALES
 
@@ -6,14 +13,96 @@ from django.shortcuts import render, HttpResponse
 def inicio(request):
     return render(request, 'inicio/index.html')
 
+@role_required('Administrador')
 def inicioAdmin(request):
     return render(request, 'usAdmin/index.html')
 
+@role_required('Estudiante')
 def registroUser(request):
     return render(request, 'inicio/registro.html')
 
+def accesoDenegado(request):
+    return render(request, 'generales/accesoDenegado.html')
+
 def inicioEstudiante(request):
     return render(request, 'estudiante/index.html')
+
+from django.contrib.auth import login
+from django.shortcuts import redirect
+
+def registroExitoso(request):
+    if request.method == 'POST':
+        print(request.POST)
+        if request.POST['password'] == request.POST['confirmPassword']:
+            try:
+                password = request.POST.get('password')
+                email = request.POST.get('email')
+                
+                # Validaciones
+                if len(password) < 8 or not re.match(r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$', password):
+                    return HttpResponse('La contraseña debe tener al menos 8 caracteres y contener letras y números.')
+
+                if not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email):
+                    return HttpResponse('El formato del correo electrónico no es válido.')
+                
+                # Crear usuario
+                user = User.objects.create_user(
+                    username=email,  # Usa el correo como username
+                    email=email,
+                    password=password,
+                    first_name=request.POST['firstName'],
+                    last_name=request.POST['lastName']
+                )
+                print('***INICIO***')
+                # Si quieres asignar rol por defecto
+                rol_estudiante = Rol.objects.get(nombre='Estudiante')
+                print(rol_estudiante)
+                user.rol = rol_estudiante
+                print(user.rol)
+                tipo_gratis= TipoUsuario.objects.get(nombre='De prueba Gratuita')
+                user.tipo_usuario=tipo_gratis
+                print(user.tipo_usuario)
+                user.save()
+                print('***FIN***')
+                login(request, user)
+                print("Usuario creado y logueado exitosamente.")
+                
+                return redirect('inicio')  # O la vista que tengas definida
+            except Exception as e:
+                print(f"❌ Error al crear el usuario: {e}")
+                return HttpResponse('Ocurrió un error al crear el usuario.')
+        else:
+            return HttpResponse('Las contraseñas no coinciden.')
+    return HttpResponse('Método no permitido')
+
+
+
+def custom_login(request):
+    print("entre a la funcion custom")
+    if request.method == "POST":  
+        print("Estoy en post")      
+        user = authenticate(request, username=request.POST['email'], password= request.POST
+        ['password'])
+        print(user)
+        print("Ya autentique el usuario")
+        print(user is not None)
+        if user is not None:            
+            login(request, user)
+            print("Loguie al usuario")
+            rol = user.rol_id  # Asignar rol después de la autenticación   
+            print(rol)         
+            if rol == 1:
+                print("Ingrese al rol 1")
+                return redirect('dashboard-adm')
+            elif rol == 2:
+                return redirect('dashboard-adm')
+            elif rol == 3:
+                return redirect('student_dashboard')
+        else:
+            # Manejar error de autenticación
+            return render(request, 'login.html', {'error': 'Credenciales inválidas'})
+    return redirect('inicio')
+
 
 #USO DE OPENAI
 import os
