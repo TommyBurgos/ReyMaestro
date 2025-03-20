@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso Denegado</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+</head>
+<body class="bg-gradient-to-b from-gray-900 to-gray-700 min-h-screen flex items-center justify-center">
+    {% load static %}
+    <div class="bg-white p-10 rounded-2xl shadow-2xl text-center max-w-md animate-fade-in">
+        <div class="mb-4">
+            <i class="bi bi-exclamation-triangle-fill text-yellow-500 text-6xl"></i>
+        </div>
+        <h1 class="text-4xl font-bold text-gray-800 mb-4">Acceso Denegado</h1>
+        <p class="text-gray-600 mb-6">Parece que estás intentando mover una pieza fuera de las reglas del tablero </p> <img style="width: 50px; height: 50px; display: inline;" src="{% static 'paginaWeb/img/chessboard.png' %}" alt="Desarrollo Web" class="escuela-icon">
+
+        <div class="flex justify-center space-x-4 mb-6">
+            <img class="w-12 h-12" src="{% static 'paginaWeb/img/rey.png' %}">            
+            <img src="{% static 'paginaWeb/img/ajedrez.png' %}" alt="Reina" class="w-12 h-12">
+            <img src="{% static 'paginaWeb/img/obispo.png' %}" alt="Alfil" class="w-12 h-12">
+        </div>
+
+        <a href="/" class="inline-flex items-center px-6 py-3 bg-gray-800 text-white rounded-xl hover:bg-gray-700 transition shadow-lg">
+            <i class="bi bi-arrow-left-circle-fill mr-2"></i> Volver al inicio
+        </a>
+    </div>
+
+    <style>
+        @keyframes fade-in {
+            0% { opacity: 0; transform: scale(0.95); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        .animate-fade-in {
+            animation: fade-in 0.6s ease-out;
+        }
+    </style>
+
+</body>
+</html>
