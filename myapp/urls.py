@@ -8,8 +8,11 @@ urlpatterns = [
     path('usEstudiante/', views.inicioEstudiante, name="student_dashboard"),
     path('usDenegado/', views.accesoDenegado, name="accesoDenegado"),   
     path('registroExitoso/',views.registroExitoso),
+    path('usDocente/', views.inicioDocente, name="teacher_dashboard"),
     path('inicio/',views.custom_login),
     path("api/chatbot/", views.chatbot_response, name="chatbot_response"),
+    path("logout/", views.signout, name="logout"),
+
     
 
 ]

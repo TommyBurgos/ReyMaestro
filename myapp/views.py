@@ -2,6 +2,7 @@ from django.shortcuts import render, HttpResponse
 from django.contrib.auth import login, logout, authenticate
 from user.models import User, Rol, TipoUsuario
 from django.db.models import Q
+from django.middleware.csrf import rotate_token
 import re
 
 from .permissions import role_required
@@ -15,17 +16,39 @@ def inicio(request):
 
 @role_required('Administrador')
 def inicioAdmin(request):
-    return render(request, 'usAdmin/index.html')
+    user = request.user
+    imgPerfil=user.imgPerfil
+    # 1. Cantidad de usuarios cuyo rol es igual a 2
+    cantidad_usuarios_docentes = User.objects.filter(rol__id=2).count()
+    cantidad_usuarios_alumnos = User.objects.filter(rol__id=3).count()
+    context = {
+        'cantidad_usuarios_docentes': cantidad_usuarios_docentes, 
+        'cantidad_usuarios_alumnos':cantidad_usuarios_alumnos,               
+        'imgPerfil': imgPerfil,        
+        'usuario':user.username,        
+    }    
+    return render(request, 'usAdmin/index.html', context)
 
-@role_required('Estudiante')
+
 def registroUser(request):
     return render(request, 'inicio/registro.html')
 
 def accesoDenegado(request):
     return render(request, 'generales/accesoDenegado.html')
 
+@role_required('Estudiante')
 def inicioEstudiante(request):
     return render(request, 'estudiante/index.html')
+
+
+def inicioDocente(request):
+    return render(request, 'docente/index.html')
+
+
+def signout(request):
+    logout(request)
+    rotate_token(request)  # Gira el token CSRF para la nueva sesión
+    return redirect('inicio')
 
 from django.contrib.auth import login
 from django.shortcuts import redirect
