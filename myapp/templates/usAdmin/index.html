@@ -44,67 +44,12 @@
 <body class="bg-gradient-to-b from-gray-900 to-gray-700 min-h-screen flex flex-col">
 
     <!-- Navbar -->
-    <nav class="flex items-center justify-between bg-gray-800 p-4 text-white shadow-lg">
-      <div class="flex items-center space-x-4">
-          <button id="menu-toggle" class="text-2xl focus:outline-none">
-              <i class="bi bi-list"></i>
-          </button>
-          <h1 class="text-xl font-bold">Admin Panel</h1>
-      </div>
-
-      <div class="flex items-center space-x-6">
-          <i class="bi bi-bell-fill text-xl cursor-pointer hover:text-yellow-400"></i>
-          <i class="bi bi-envelope-fill text-xl cursor-pointer hover:text-yellow-400"></i>
-
-          <div class="relative cursor-pointer" id="profile-menu-toggle">
-              <div class="flex items-center space-x-2">
-                {% if imgPerfil %}
-                <img src="{{ imgPerfil.url }}"
-                alt="Perfil" class="w-10 h-10 rounded-full border-2 border-yellow-400">
-                {% else %}
-                <img src="" alt="Default Profile Picture" class="w-10 h-10 rounded-full border-2 border-yellow-400">
-                {% endif %}                  
-                  <span>Bienvenido {{ usuario }}</span>
-              </div>
-
-              <div id="profile-menu" class="absolute right-0 mt-2 w-48 bg-white text-gray-700 rounded-xl shadow-xl hidden z-10">
-                  <a href="#" class="block px-4 py-2 hover:bg-gray-100">Configuración de cuenta</a>
-                  <a href="#" class="block px-4 py-2 hover:bg-gray-100">Editar perfil</a>
-                  <a href="/logout/" class="block px-4 py-2 text-red-600 hover:bg-gray-100">Cerrar sesión</a>
-              </div>
-          </div>
-      </div>
-  </nav>
+    {% include 'usAdmin/baseNavbar.html' %}
 
 
     <div class="flex flex-1">
         <!-- Sidebar -->
-        <aside id="sidebar" class="bg-gray-800 text-white w-64 transition-all duration-300 ease-in-out overflow-hidden">
-            <div class="p-4 text-center text-2xl font-bold border-b border-gray-700 sidebar-title">Menu</div>
-            <nav class="p-4 space-y-2">
-                <a href="#" class="flex items-center p-3 rounded-xl hover:bg-gray-700 group">
-                    <i class="bi bi-speedometer2 mr-3"></i> <span class="menu-text group-hover:inline">Dashboard</span>
-                </a>
-                <a href="#" class="flex items-center p-3 rounded-xl hover:bg-gray-700 group">
-                    <i class="bi bi-people-fill mr-3"></i> <span class="menu-text group-hover:inline">Usuarios</span>
-                </a>
-                <a href="#" class="flex items-center p-3 rounded-xl hover:bg-gray-700 group">
-                    <i class="bi bi-book-fill mr-3"></i> <span class="menu-text group-hover:inline">Cursos</span>
-                </a>
-                <a href="#" class="flex items-center p-3 rounded-xl hover:bg-gray-700 group">
-                    <i class="bi bi-credit-card-fill mr-3"></i> <span class="menu-text group-hover:inline">Pagos</span>
-                </a>
-                <a href="#" class="flex items-center p-3 rounded-xl hover:bg-gray-700 group">
-                    <i class="bi bi-bar-chart-fill mr-3"></i> <span class="menu-text group-hover:inline">Reportes</span>
-                </a>
-                <a href="#" class="flex items-center p-3 rounded-xl hover:bg-gray-700 group">
-                    <i class="bi bi-gear-fill mr-3"></i> <span class="menu-text group-hover:inline">Configuración</span>
-                </a>
-                <a href="#" class="flex items-center p-3 rounded-xl hover:bg-gray-700 group">
-                    <i class="bi bi-life-preserver mr-3"></i> <span class="menu-text group-hover:inline">Soporte</span>
-                </a>
-            </nav>
-        </aside>
+        {% include 'usAdmin/baseAside.html' %}
 
         <!-- Main content -->
         <main class="flex-1 p-6 text-white">
@@ -129,8 +74,8 @@
                           <div class="col-icon">
                             <div
                               class="icon-big text-center icon-primary bubble-shadow-small"
-                            >
-                              <i class="fas fa-users"></i>
+                            ><a href="/usAdmin/detalleAlumnos">
+                              <i class="fas fa-users"></i></a>
                             </div>
                           </div>
                           <!--PRIMER CUADRO-->
