@@ -16,3 +16,28 @@ a p{
     background-color: #333;
     border-radius: 10px;
 }
+
+/*Para tabla de detalle Usuario*/
+.divide-y tr td{    
+    color: #000;
+}
+
+/* usuarios.css */
+table th, table td {
+    transition: background-color 0.3s;
+  }
+  
+  table tr:hover td {
+    background-color: #f9fafb;
+  }
+  
+  #searchInput::placeholder {
+    color: #a0aec0;
+  }
+  
+  #searchInput:focus {
+    outline: none;
+    border-color: #fbbf24;
+    box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.4);
+  }
+  

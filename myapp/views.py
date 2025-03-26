@@ -4,7 +4,6 @@ from user.models import User, Rol, TipoUsuario
 from django.db.models import Q
 from django.middleware.csrf import rotate_token
 import re
-
 from .permissions import role_required
 
 
@@ -28,6 +27,80 @@ def inicioAdmin(request):
         'usuario':user.username,        
     }    
     return render(request, 'usAdmin/index.html', context)
+
+@role_required('Administrador')
+def detalleUsuarios(request):
+    user = request.user
+    usuarios = User.objects.all().order_by('-date_joined')
+    imgPerfil=user.imgPerfil
+    busqueda = request.GET.get("buscar")
+    if busqueda:
+        usuarios = User.objects.filter(Q(username=busqueda)
+                                       | Q(first_name=busqueda)
+                                       | Q(last_name=busqueda)
+                                       | Q(email=busqueda)).distinct()
+        print("entre al if de busqueda")
+    print("LISTADO DE USUARIOS")
+    print(usuarios)
+
+    
+    # 1. Cantidad de usuarios cuyo rol es igual a 2    
+    context = {                     
+        'imgPerfil': imgPerfil,        
+        'usuario':user.username,  
+        'usuarios':usuarios      
+    }
+    return render(request, 'usAdmin/detalleAlumnos.html', context)
+
+@role_required('Administrador')
+def detalleCursos(request):
+    user = request.user
+    imgPerfil=user.imgPerfil
+    context = {                     
+        'imgPerfil': imgPerfil,        
+        'usuario':user.username,        
+    }
+    return render(request, 'usAdmin/detalleCursos.html', context)
+
+@role_required('Administrador')
+def detallePagos(request):
+    user = request.user
+    imgPerfil=user.imgPerfil
+    context = {                     
+        'imgPerfil': imgPerfil,        
+        'usuario':user.username,        
+    }
+    return render(request, 'usAdmin/detallePagos.html', context)
+
+@role_required('Administrador')
+def detalleReportes(request):
+    user = request.user
+    imgPerfil=user.imgPerfil
+    context = {                     
+        'imgPerfil': imgPerfil,        
+        'usuario':user.username,        
+    }
+    return render(request, 'usAdmin/detalleReportes.html', context)
+
+@role_required('Administrador')
+def configuracionAdmin(request):
+    user = request.user
+    imgPerfil=user.imgPerfil
+    context = {                     
+        'imgPerfil': imgPerfil,        
+        'usuario':user.username,        
+    }
+    return render(request, 'usAdmin/configuracion.html', context)
+
+@role_required('Administrador')
+def soporteAdmin(request):
+    user = request.user
+    imgPerfil=user.imgPerfil
+    context = {                     
+        'imgPerfil': imgPerfil,        
+        'usuario':user.username,        
+    }
+    return render(request, 'usAdmin/soporte.html', context)
 
 
 def registroUser(request):

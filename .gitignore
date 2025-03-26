@@ -1,2 +1,3 @@
 __pycache__/
 git-filter-repo/
+db.sqlite3

@@ -192,8 +192,8 @@ Circles.create({
 //Notify
 $.notify({
 	icon: 'icon-bell',
-	title: 'Kaiadmin',
-	message: 'Premium Bootstrap 5 Admin Dashboard',
+	title: 'Nueva suscripción',
+	message: 'Se ha realizado un nueva suscripción hace 30 minutos',
 },{
 	type: 'secondary',
 	placement: {
