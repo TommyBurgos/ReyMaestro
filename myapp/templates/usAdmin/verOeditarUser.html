@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    {% load static %}
+    {% load widget_tweaks %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+
+    <link href="{% static 'img/logoReyMaestro3.png' %}" rel="icon">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+        
+    <!-- Fonts and icons -->
+    <script src="{% static 'js/plugin/webfont/webfont.min.js' %}"></script>
+    <script>
+      WebFont.load({
+        google: { families: ["Public Sans:300,400,500,600,700"] },
+        custom: {
+          families: [
+            "Font Awesome 5 Solid",
+            "Font Awesome 5 Regular",
+            "Font Awesome 5 Brands",
+            "simple-line-icons",
+          ],
+          urls: ["{% static 'css/fonts.min.css' %}"],
+        },
+        active: function () {
+          sessionStorage.fonts = true;
+        },
+      });
+    </script>
+
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/plugins.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/kaiadmin.min.css' %}" />
+
+    <!-- CSS Just for demo purpose, don't include it in your project -->
+    <link rel="stylesheet" href="{% static 'css/demo.css' %}" />
+    <!--CAMBIOS PROPIOS DE ESTILO-->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+<body class="bg-gradient-to-b from-gray-900 to-gray-700 min-h-screen flex flex-col">
+
+    <!-- Navbar -->
+    {% include 'usAdmin/baseNavbar.html' %}
+    <div class="flex flex-1">
+        <!-- Sidebar -->
+        {% include 'usAdmin/baseAside.html' %}
+        <main class="bg-gray-100 flex items-center justify-center p-6 text-black" style="width: 100%;" >
+            <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-4xl text-center">
+                <h2 class="text-3xl font-bold text-gray-800 mb-8">Editar Usuario</h2>
+                <form method="POST" enctype="multipart/form-data" class="text-left">
+                    {% csrf_token %}
+        
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Foto -->
+                        <div class="flex justify-center items-start">
+                            <div class="flex flex-col items-center">
+                                <img src="{{ usuario.imgPerfil.url }}" alt="Foto de perfil" class="w-40 h-40 rounded-full border-4 border-yellow-400 object-cover">
+                                <p class="mt-2 text-sm text-gray-500">Foto actual</p>
+                            </div>
+                        </div>
+        
+                        <!-- Campos -->
+                        <div class="md:col-span-2 space-y-4">
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-1">Nombre</label>
+                                {{ form.first_name|add_class:"w-full p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-400 text-black" }}
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-1">Apellido</label>
+                                {{ form.last_name|add_class:"w-full p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-400 text-black" }}
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-1">Estado del usuario</label>
+                                {{ form.is_active|add_class:"w-full p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-400 text-black" }}
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-1">Correo electrónico</label>
+                                {{ form.email|add_class:"w-full p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-400 text-black" }}
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-1">Nueva foto de perfil</label>
+                                {{ form.imgPerfil|add_class:"w-full p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-400 bg-white text-black" }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-10 text-center">
+                        <button type="submit" class="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold px-6 py-3 rounded-xl shadow-md transition">
+                            Guardar cambios
+                        </button>
+                    </div>
+                </form>
+            </div>      
+        </main>
+</body>
+</html>
