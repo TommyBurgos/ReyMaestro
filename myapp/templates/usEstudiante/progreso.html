@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Progreso - Academia de Ajedrez</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      background-color: #0f172a;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    a { text-decoration: none; }
+
+    .sidebar {
+      width: 240px;
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      background-color: #1e293b;
+      padding: 30px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .sidebar img.logo {
+      display: block;
+      margin: 0 auto 40px;
+      width: 140px;
+    }
+    .sidebar a.nav-link {
+      color: #cbd5e1;
+      font-size: 16px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .sidebar a.nav-link:hover, .sidebar a.active {
+      color: #fff;
+      background-color: #334155;
+      border-radius: 8px;
+      padding: 10px;
+    }
+    .main {
+      margin-left: 240px;
+      padding: 30px;
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #0f172a;
+      padding: 15px 30px;
+      border-bottom: 1px solid #334155;
+    }
+    .search-input {
+      background-color: #1e293b;
+      border: none;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 10px;
+      width: 750px;
+    }
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .profile-circle {
+      background-color: #0284c7;
+      color: #fff;
+      border-radius: 50%;
+      width: 35px;
+      height: 35px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+    .card-progreso {
+      background-color: #1e293b;
+      padding: 20px;
+      border-radius: 12px;
+    }
+    .ranking-card {
+      background-color: #1e293b;
+      padding: 20px;
+      border-radius: 12px;
+      min-width: 250px;
+    }
+    .ranking-user {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .ranking-user .info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .ranking-user img {
+      border-radius: 50%;
+      width: 25px;
+      height: 25px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <img src="/static/img/logoReyMaestro3.png" alt="Logo" class="logo">
+    <a href="usEstudiante/" class="nav-link"><i class="fa fa-home"></i> Inicio</a>
+    <a href="rutas" class="nav-link"><i class="fa fa-map"></i> Mis Rutas</a>
+    <a href="#" class="nav-link active"><i class="fa fa-chart-line"></i> Mi progreso</a>
+    <a href="chat" class="nav-link"><i class="fa fa-robot"></i> Chat ADA</a>
+    <a href="notificaciones" class="nav-link"><i class="fa fa-bell"></i> Notificaciones</a>
+    <div class="sidebar-bottom">
+      <a class="nav-link text-info">Hay empresas que pagan este curso 👀</a>
+      <a class="nav-link text-light" href="#">Descubre más →</a>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+    <!-- Topbar -->
+    <div class="topbar mb-4">
+      <input type="text" class="search-input" placeholder="¿Qué quieres aprender?">
+      <div class="user-info">
+        <span class="text-success fw-bold">🚀 9</span>
+        <div class="profile-circle">ES</div>
+      </div>
+    </div>
+
+    <h2 class="mb-4">Mi Progreso</h2>
+
+    <div class="d-flex gap-4">
+      <!-- Gráfico -->
+      <div class="flex-grow-1 card-progreso">
+        <h5 class="mb-3">Progreso</h5>
+        <canvas id="progressChart" height="200"></canvas>
+        <p class="mt-3">Clases vistas: <strong>4</strong></p>
+      </div>
+
+      <!-- Ranking semanal -->
+      <div class="ranking-card">
+        <h6 class="text-muted">Tu posición semanal</h6>
+        <small class="text-muted">Del 24 - 30 de marzo</small>
+        <hr>
+        <div class="ranking-user">
+          <div class="info">
+            <span>#1</span>
+            <img src="https://i.pravatar.cc/25?img=1" alt=""> Patricio Sánchez
+          </div>
+          <small class="text-muted">11721pts</small>
+        </div>
+        <div class="ranking-user">
+          <div class="info">
+            <span>#2</span>
+            <img src="https://i.pravatar.cc/25?img=2" alt=""> Andres Echeverría
+          </div>
+          <small class="text-muted">5900pts</small>
+        </div>
+        <div class="ranking-user">
+          <div class="info">
+            <span>#3</span>
+            <i class="fas fa-circle"></i> Anónimo
+          </div>
+          <small class="text-muted">5499pts</small>
+        </div>
+        <div class="text-center py-2">⬇</div>
+        <div class="ranking-user">
+          <div class="info">
+            <span>#28346</span>
+            <img src="https://i.pravatar.cc/25?img=5" alt=""> Hector Ismael
+          </div>
+          <small class="text-muted">2pts</small>
+        </div>
+        <div class="ranking-user">
+          <div class="info">
+            <span>#28347</span>
+            <img src="https://i.pravatar.cc/25?img=6" alt=""> Jimm BJ
+          </div>
+          <small class="text-muted">2pts</small>
+        </div>
+        <div class="ranking-user">
+          <div class="info">
+            <span>#28348</span>
+            <img src="https://i.pravatar.cc/25?img=7" alt=""> Luis Enrique
+          </div>
+          <small class="text-muted">2pts</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const ctx = document.getElementById('progressChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['24 mar', '25 mar', '26 mar', '27 mar', '28 mar', '29 mar', '30 mar'],
+        datasets: [{
+          label: 'Clases vistas',
+          data: [0, 0, 0, 1, 0, 3, 0],
+          backgroundColor: '#3b82f6'
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            ticks: { color: '#ccc' },
+            grid: { color: '#334155' }
+          },
+          x: {
+            ticks: { color: '#ccc' },
+            grid: { display: false }
+          }
+        },
+        plugins: {
+          legend: { display: false }
+        }
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Academia de Ajedrez - Chat ADA</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      background-color: #0f172a;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    a { text-decoration: none; }
+
+    .sidebar {
+      width: 240px;
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      background-color: #1e293b;
+      padding: 30px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .sidebar img.logo {
+      display: block;
+      margin: 0 auto 40px;
+      width: 140px;
+    }
+    .sidebar a.nav-link {
+      color: #cbd5e1;
+      font-size: 16px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .sidebar a.nav-link:hover, .sidebar a.active {
+      color: #fff;
+      background-color: #334155;
+      border-radius: 8px;
+      padding: 10px;
+    }
+    .sidebar-bottom {
+      margin-top: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      padding-top: 40px;
+    }
+
+    .main {
+      margin-left: 240px;
+      padding: 30px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #0f172a;
+      padding: 15px 30px;
+      position: sticky;
+      top: 0;
+      z-index: 1001;
+      border-bottom: 1px solid #334155;
+    }
+    .search-input {
+      background-color: #1e293b;
+      border: none;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 10px;
+      width: 750px;
+    }
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      position: relative;
+    }
+    .badge-streak {
+      color: #22c55e;
+      font-weight: bold;
+      position: relative;
+      cursor: pointer;
+    }
+    .streak-popup, .profile-popup {
+      background-color: #1e293b;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      color: #fff;
+      position: absolute;
+      display: none;
+    }
+    .streak-popup.active, .profile-popup.active {
+      display: block;
+    }
+    .profile-circle {
+      background-color: #0284c7;
+      color: #fff;
+      border-radius: 50%;
+      width: 35px;
+      height: 35px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .chat-container {
+      margin-top: 30px;
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 150px);
+    }
+    .chat-messages {
+      flex-grow: 1;
+      background-color: #1e293b;
+      border-radius: 10px;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    .message {
+      margin-bottom: 15px;
+      padding: 10px 15px;
+      border-radius: 10px;
+      max-width: 70%;
+    }
+    .user-message {
+      background-color: #334155;
+      align-self: flex-end;
+    }
+    .bot-message {
+      background-color: #0ea5e9;
+      align-self: flex-start;
+    }
+    .chat-input {
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .chat-input input {
+      flex-grow: 1;
+      border-radius: 10px;
+      padding: 10px;
+      border: none;
+      background-color: #1e293b;
+      color: #fff;
+    }
+    .chat-input button {
+      background-color: #0ea5e9;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <img src="/static/img/logoReyMaestro3.png" alt="Logo" class="logo">
+    <a href="#" class="nav-link"><i class="fa fa-home"></i> Inicio</a>
+    <a href="#" class="nav-link"><i class="fa fa-map"></i> Mis Rutas</a>
+    <a href="#" class="nav-link"><i class="fa fa-chart-line"></i> Mi progreso</a>
+    <a href="#" class="nav-link active"><i class="fa fa-robot"></i> Chat ADA</a>
+    <a href="#" class="nav-link"><i class="fa fa-bell"></i> Notificaciones</a>
+    <div class="sidebar-bottom">
+      <a class="nav-link text-info">Hay empresas que pagan este curso 👀</a>
+      <a class="nav-link text-light" href="#">Descubre más →</a>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <input type="text" class="search-input" placeholder="¿Qué quieres aprender?">
+      <div class="user-info">
+        <div class="badge-streak" id="streak-btn">🚀 <span class="text-success">9 semanas</span></div>
+        <div class="profile-circle" id="profile-btn">ES</div>
+      </div>
+    </div>
+
+    <h2>Chat con ADA</h2>
+    <div class="chat-container">
+      <div class="chat-messages" id="chatBox">
+        <div class="message bot-message">Hola, soy ADA 🤖. ¿En qué puedo ayudarte hoy?</div>
+        <div class="message user-message">¿Cómo se gana una partida de ajedrez?</div>
+        <div class="message bot-message">Puedes ganar dando jaque mate al rey del oponente o si tu rival se rinde.</div>
+      </div>
+      <div class="chat-input">
+        <input type="text" id="chatInput" placeholder="Pregúntame lo que quieras...">
+        <button onclick="sendMessage()">Enviar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function sendMessage() {
+      const input = document.getElementById("chatInput");
+      const message = input.value.trim();
+      if (message) {
+        const chatBox = document.getElementById("chatBox");
+        const userMsg = document.createElement("div");
+        userMsg.className = "message user-message";
+        userMsg.textContent = message;
+        chatBox.appendChild(userMsg);
+
+        const botMsg = document.createElement("div");
+        botMsg.className = "message bot-message";
+        botMsg.textContent = "Procesando respuesta...";
+        chatBox.appendChild(botMsg);
+
+        input.value = "";
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        setTimeout(() => {
+          botMsg.textContent = "Gracias por tu pregunta. Aún estoy en desarrollo 🙂";
+        }, 1000);
+      }
+    }
+  </script>
+</body>
+</html>
