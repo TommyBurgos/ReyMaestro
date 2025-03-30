@@ -21,7 +21,10 @@ urlpatterns = [
     path('inicio/',views.custom_login),
     path("api/chatbot/", views.chatbot_response, name="chatbot_response"),
     path("logout/", views.signout, name="logout"),
-
-    
+    #Estudiantes
+    path('usEstudiante/chat', views.chatEstudiante, name="student_chat"),
+    path('usEstudiante/notificaciones', views.notificacionesEstudiante, name="student_notificaciones"),
+    path('usEstudiante/progreso', views.progresoEstudiante, name="student_progreso"),
+    path('usEstudiante/rutas', views.rutasEstudiante, name="student_rutas"),
 
 ]
