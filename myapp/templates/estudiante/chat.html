@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+{% load static %}
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel Estudiante - Academia de Ajedrez</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <style>
+    body {
+      background-color: #111827;
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .sidebar {
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 240px;
+      background-color: #1f2937;
+      padding-top: 1rem;
+    }
+    .sidebar .nav-link {
+      color: #cbd5e0;
+    }
+    .sidebar .nav-link.active, .sidebar .nav-link:hover {
+      color: white;
+      background-color: #374151;
+    }
+    .main-content {
+      margin-left: 240px;
+    }
+    .topbar {
+      background-color: #1f2937;
+      padding: 1rem;
+      border-bottom: 1px solid #374151;
+    }
+    .sticky-bar {
+      position: sticky;
+      top: 0;
+      z-index: 1020;
+      background-color: #111827;
+      padding: 0.5rem 1rem;
+      border-bottom: 1px solid #374151;
+    }
+    .category-scroll {
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+    .category-scroll .badge {
+      background-color: #374151;
+      margin-right: 0.5rem;
+      padding: 0.6rem 1rem;
+      font-size: 0.9rem;
+      border-radius: 2rem;
+      cursor: pointer;
+    }
+    .course-card {
+      background-color: #1f2937;
+      border-radius: 10px;
+      overflow: hidden;
+      transition: transform 0.2s;
+    }
+    .course-card:hover {
+      transform: scale(1.02);
+    }
+    .streak {
+      font-size: 0.9rem;
+      color: #10b981;
+    }
+  </style>
+</head>
+<body>
+  <div class="d-flex">
+    <!-- Sidebar -->
+    <div class="sidebar d-flex flex-column p-3">
+      <a href="#" class="d-flex align-items-center mb-4">
+        <img src="{% static 'img/logoReyMaestro3.png' %}" alt="Logo" height="60">
+      </a>
+      <ul class="nav nav-pills flex-column">
+        <li class="nav-item"><a href="#" class="nav-link active"><i class="bi bi-house"></i> Inicio</a></li>
+        <li class="nav-item"><a href="#" class="nav-link"><i class="bi bi-map"></i> Mis rutas</a></li>
+        <li class="nav-item"><a href="#" class="nav-link"><i class="bi bi-graph-up"></i> Mi progreso</a></li>
+        <li class="nav-item"><a href="#" class="nav-link"><i class="bi bi-robot"></i> Chat ADA</a></li>
+        <li class="nav-item"><a href="#" class="nav-link"><i class="bi bi-bell"></i> Notificaciones</a></li>
+      </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content flex-grow-1">
+      <!-- Topbar -->
+      <div class="topbar d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+          <input type="text" class="form-control bg-dark text-white border-0" placeholder="¿Qué quieres aprender?" style="width: 300px;">
+        </div>
+        <div class="d-flex align-items-center">
+          <div class="me-3 streak">
+            🚀 Racha semanal: <strong>9 semanas</strong>
+          </div>
+          <div>
+            <img src="https://ui-avatars.com/api/?name=Estudiante&background=0D8ABC&color=fff" class="rounded-circle" height="40" alt="Avatar">
+          </div>
+        </div>
+      </div>
+
+      <!-- Categorías Scroll -->
+      <div class="sticky-bar">
+        <div class="category-scroll d-flex">
+          <span class="badge">Todo</span>
+          <span class="badge">Tácticas</span>
+          <span class="badge">Aperturas</span>
+          <span class="badge">Finales</span>
+          <span class="badge">Jugadas maestras</span>
+          <span class="badge">Torneos</span>
+        </div>
+      </div>
+
+      <!-- Cursos recomendados -->
+      <div class="container py-4">
+        <h4 class="mb-4">Cursos recomendados para ti</h4>
+        <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
+          {% for i in "1234" %}
+          <div class="col">
+            <div class="course-card p-2">
+              <img src="{% static 'img/examples/example2-300x300.jpg' %}" class="w-100" alt="Curso de ajedrez">
+              <div class="p-2">
+                <h6 class="text-white">Curso Nivel ADC</h6>
+                <p class="text-muted mb-0">Por GM Carlsen</p>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
