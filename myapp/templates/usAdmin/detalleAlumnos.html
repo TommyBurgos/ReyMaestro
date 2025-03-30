@@ -46,6 +46,13 @@
 
 </head>
 <body class="bg-gradient-to-b from-gray-900 to-gray-700 min-h-screen flex flex-col">
+  {% if messages %}
+    <div id="alerta" class="fixed top-4 right-4 bg-green-500 text-white px-6 py-4 rounded-xl shadow-lg z-50">
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+    </div>
+    {% endif %}
 
     <!-- Navbar -->
     {% include 'usAdmin/baseNavbar.html' %}
@@ -128,6 +135,39 @@
     </div>
 
     <script>
+      const menuToggle = document.getElementById('menu-toggle');
+      const sidebar = document.getElementById('sidebar');
+      const sidebarTitle = document.querySelector('.sidebar-title');
+      const profileMenuToggle = document.getElementById('profile-menu-toggle');
+      const profileMenu = document.getElementById('profile-menu');
+
+      menuToggle.addEventListener('click', () => {
+          if (sidebar.classList.contains('w-64')) {
+              sidebar.classList.remove('w-64');
+              sidebar.classList.add('w-16');
+              document.querySelectorAll('.menu-text').forEach(el => el.classList.add('hidden'));
+              sidebarTitle.classList.add('hidden');
+          } else {
+              sidebar.classList.remove('w-16');
+              sidebar.classList.add('w-64');
+              document.querySelectorAll('.menu-text').forEach(el => el.classList.remove('hidden'));
+              sidebarTitle.classList.remove('hidden');
+          }
+      });
+
+      profileMenuToggle.addEventListener('click', () => {
+          profileMenu.classList.toggle('hidden');
+      });
+
+      // Cerrar menú de perfil si se hace clic fuera
+      document.addEventListener('click', (e) => {
+          if (!profileMenuToggle.contains(e.target)) {
+              profileMenu.classList.add('hidden');
+          }
+      });
+  </script>
+
+    <script>
       function toggleMenu(icon) {
           document.querySelectorAll('.action-menu').forEach(menu => {
               if (!menu.contains(icon.nextElementSibling)) {
@@ -147,7 +187,15 @@
           });
       });
   </script>
+  <script>
+    setTimeout(() => {
+        const alerta = document.getElementById("alerta");
+        if (alerta) alerta.remove();
+    }, 5000);
+</script>
 
+
+  
 </body>
 </html>
 

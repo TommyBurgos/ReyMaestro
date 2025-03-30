@@ -101,5 +101,58 @@
                 </form>
             </div>      
         </main>
+        <script>
+            const menuToggle = document.getElementById('menu-toggle');
+            const sidebar = document.getElementById('sidebar');
+            const sidebarTitle = document.querySelector('.sidebar-title');
+            const profileMenuToggle = document.getElementById('profile-menu-toggle');
+            const profileMenu = document.getElementById('profile-menu');
+      
+            menuToggle.addEventListener('click', () => {
+                if (sidebar.classList.contains('w-64')) {
+                    sidebar.classList.remove('w-64');
+                    sidebar.classList.add('w-16');
+                    document.querySelectorAll('.menu-text').forEach(el => el.classList.add('hidden'));
+                    sidebarTitle.classList.add('hidden');
+                } else {
+                    sidebar.classList.remove('w-16');
+                    sidebar.classList.add('w-64');
+                    document.querySelectorAll('.menu-text').forEach(el => el.classList.remove('hidden'));
+                    sidebarTitle.classList.remove('hidden');
+                }
+            });
+      
+            profileMenuToggle.addEventListener('click', () => {
+                profileMenu.classList.toggle('hidden');
+            });
+      
+            // Cerrar menú de perfil si se hace clic fuera
+            document.addEventListener('click', (e) => {
+                if (!profileMenuToggle.contains(e.target)) {
+                    profileMenu.classList.add('hidden');
+                }
+            });
+        </script>
+      
+          <script>
+            function toggleMenu(icon) {
+                document.querySelectorAll('.action-menu').forEach(menu => {
+                    if (!menu.contains(icon.nextElementSibling)) {
+                        menu.classList.add('hidden');
+                    }
+                });
+                const menu = icon.nextElementSibling;
+                menu.classList.toggle('hidden');
+            }
+      
+            document.addEventListener('click', function(e) {
+                const menus = document.querySelectorAll('.action-menu');
+                menus.forEach(menu => {
+                    if (!menu.contains(e.target) && !e.target.matches('.bi-three-dots-vertical')) {
+                        menu.classList.add('hidden');
+                    }
+                });
+            });
+        </script>
 </body>
 </html>
