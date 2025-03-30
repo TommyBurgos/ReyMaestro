@@ -1,10 +1,15 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render, HttpResponse, get_object_or_404
 from django.contrib.auth import login, logout, authenticate
 from user.models import User, Rol, TipoUsuario
 from django.db.models import Q
 from django.middleware.csrf import rotate_token
+from django.contrib.auth.decorators import login_required
 import re
 from .permissions import role_required
+from django.core.paginator import Paginator
+from .forms import UsuarioForm  # Importa el form
+
+from django.contrib import messages
 
 
 #FUNCIONES ADICIONALES
@@ -35,22 +40,63 @@ def detalleUsuarios(request):
     imgPerfil=user.imgPerfil
     busqueda = request.GET.get("buscar")
     if busqueda:
-        usuarios = User.objects.filter(Q(username=busqueda)
-                                       | Q(first_name=busqueda)
-                                       | Q(last_name=busqueda)
-                                       | Q(email=busqueda)).distinct()
+        usuarios = User.objects.filter(
+            Q(username__icontains=busqueda) |
+            Q(first_name__icontains=busqueda) |
+            Q(last_name__icontains=busqueda) |
+            Q(email__icontains=busqueda)
+        ).distinct()
         print("entre al if de busqueda")
     print("LISTADO DE USUARIOS")
     print(usuarios)
 
-    
+        # Paginación — debe ir después de filtrar los usuarios
+    paginator = Paginator(usuarios, 10)  # 10 usuarios por página
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     # 1. Cantidad de usuarios cuyo rol es igual a 2    
     context = {                     
         'imgPerfil': imgPerfil,        
         'usuario':user.username,  
-        'usuarios':usuarios      
+        'usuarios':page_obj      
     }
     return render(request, 'usAdmin/detalleAlumnos.html', context)
+
+
+def ver_o_editar_usuario(request, id):
+    usuario = get_object_or_404(User, id=id)
+    # lógica para mostrar o editar
+    form = UsuarioForm(request.POST or None, request.FILES or None, instance=usuario)
+    user = request.user
+    imgPerfil=user.imgPerfil
+    if request.method == 'POST' and form.is_valid():
+        form.save()
+        return redirect('detalleUsuarios-adm')  # O la URL que tengas como resumen
+    context = {
+        'imgPerfil': imgPerfil, 
+        'form': form,
+        'usuario': usuario,
+    }
+    return render(request, 'usAdmin/verOeditarUser.html',context)
+
+
+@role_required('Administrador')
+@login_required
+def resetear_contrasena(request, id):
+    usuario = get_object_or_404(User, id=id)
+    
+    return redirect('detalle_usuarios')
+
+def resetContra_usuario(request, id):
+    usuario = get_object_or_404(User, id=id)
+    # lógica para mostrar o editar
+    nueva_contrasena = "12345678"
+    usuario.set_password(nueva_contrasena)  # Cambia la contraseña de forma segura
+    usuario.save()
+    messages.success(request, f"La contraseña del usuario '{usuario.username}' ha sido reseteada con éxito.")
+    return redirect('detalleUsuarios-adm')
+
+
 
 @role_required('Administrador')
 def detalleCursos(request):
@@ -196,7 +242,7 @@ def custom_login(request):
                 return redirect('student_dashboard')
         else:
             # Manejar error de autenticación
-            return render(request, 'login.html', {'error': 'Credenciales inválidas'})
+            return render(request, 'generales/accesoDenegado.html', {'error': 'Credenciales inválidas'})
     return redirect('inicio')
 
 
