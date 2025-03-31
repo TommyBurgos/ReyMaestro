@@ -157,7 +157,7 @@ def accesoDenegado(request):
 
 @role_required('Estudiante')
 def inicioEstudiante(request):
-    return render(request, 'estudiante/index.html')
+    return render(request, 'usEstudiante/index.html')
 
 @role_required('Estudiante')
 def chatEstudiante(request):
@@ -175,7 +175,13 @@ def progresoEstudiante(request):
 def rutasEstudiante(request):
     return render(request, 'usEstudiante/rutas.html')
 
+@role_required('Estudiante')
+def cursosEstudiante(request):
+    return render(request, 'usEstudiante/cursos.html')
 
+@role_required('Estudiante')
+def detalleCursoEstudiante(request):
+    return render(request, 'usEstudiante/detalleCurso.html')
 
 def inicioDocente(request):
     return render(request, 'docente/index.html')
