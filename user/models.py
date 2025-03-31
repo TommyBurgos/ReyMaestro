@@ -218,3 +218,32 @@ class CursoAdmin(admin.ModelAdmin):
     list_filter = ('estado', 'nivel_dificultad')
     search_fields = ('titulo', 'profesor__username')
     autocomplete_fields = ['profesor']
+
+
+# Evaluaciones y encuestas de satisfacción
+class Examen(models.Model):
+    curso = models.ForeignKey(Curso, on_delete=models.CASCADE)
+    titulo = models.CharField(max_length=200)
+    instrucciones = models.TextField()
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+
+class PreguntaExamen(models.Model):
+    examen = models.ForeignKey(Examen, on_delete=models.CASCADE)
+    texto_pregunta = models.TextField()
+    opcion_a = models.CharField(max_length=255)
+    opcion_b = models.CharField(max_length=255)
+    opcion_c = models.CharField(max_length=255)
+    opcion_d = models.CharField(max_length=255)
+    respuesta_correcta = models.CharField(max_length=1, choices=[('A', 'A'), ('B', 'B'), ('C', 'C'), ('D', 'D')])
+
+class EncuestaSatisfaccion(models.Model):
+    curso = models.ForeignKey(Curso, on_delete=models.CASCADE)
+    pregunta = models.TextField()
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+
+class RespuestaEncuesta(models.Model):
+    encuesta = models.ForeignKey(EncuestaSatisfaccion, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    respuesta = models.TextField()
+    fecha_respuesta = models.DateTimeField(auto_now_add=True)
+
