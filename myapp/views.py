@@ -183,6 +183,14 @@ def cursosEstudiante(request):
 def detalleCursoEstudiante(request):
     return render(request, 'usEstudiante/detalleCurso.html')
 
+@role_required('Estudiante')
+def tableroEstudiante(request):
+    return render(request, 'usEstudiante/tablero.html')
+
+@role_required('Estudiante')
+def crearRutaEstudiante(request):
+    return render(request, 'usEstudiante/crearRuta.html')
+
 def inicioDocente(request):
     return render(request, 'docente/index.html')
 
