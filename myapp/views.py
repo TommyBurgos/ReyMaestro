@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponse, get_object_or_404
+from django.shortcuts import render, HttpResponse, get_object_or_404, redirect
 from django.contrib.auth import login, logout, authenticate
 from user.models import User, Rol, TipoUsuario
 from django.db.models import Q
@@ -335,3 +335,4 @@ def chatbot_response(request):
             return JsonResponse({"error": str(e)}, status=500)
 
     return JsonResponse({"error": "Método no permitido"}, status=405)
+

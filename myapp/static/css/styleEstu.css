@@ -7,9 +7,6 @@
     --color-white: #ffffff;
   }
   
-  .bg-estudiante {
-    background-color: #0f172a;
-  }
   
   /* Contenedor principal */
   .main-content {
@@ -192,4 +189,38 @@
   .btn-primary-custom:hover {
     background-color: #2563eb;
   }
-  
+
+  /*--------- PROGRESO --------*/
+.card-progreso {
+background-color: #1e293b;
+padding: 20px;
+border-radius: 12px;
+}
+
+.ranking-card {
+background-color: #1e293b;
+padding: 20px;
+border-radius: 12px;
+min-width: 250px;
+}
+
+.ranking-user {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 10px;
+}
+
+.ranking-user .info {
+display: flex;
+align-items: center;
+gap: 10px;
+color: #fff;
+}
+
+.ranking-user img {
+border-radius: 50%;
+width: 25px;
+height: 25px;
+}
+
