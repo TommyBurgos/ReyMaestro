@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponse, get_object_or_404
+from django.shortcuts import render, HttpResponse, get_object_or_404, redirect
 from django.contrib.auth import login, logout, authenticate
 from user.models import User, Rol, TipoUsuario
 from django.db.models import Q
@@ -338,6 +338,14 @@ def cursosEstudiante(request):
 def detalleCursoEstudiante(request):
     return render(request, 'usEstudiante/detalleCurso.html')
 
+@role_required('Estudiante')
+def tableroEstudiante(request):
+    return render(request, 'usEstudiante/tablero.html')
+
+@role_required('Estudiante')
+def crearRutaEstudiante(request):
+    return render(request, 'usEstudiante/crearRuta.html')
+
 def inicioDocente(request):
     return render(request, 'docente/index.html')
 
@@ -482,3 +490,4 @@ def chatbot_response(request):
             return JsonResponse({"error": str(e)}, status=500)
 
     return JsonResponse({"error": "Método no permitido"}, status=405)
+

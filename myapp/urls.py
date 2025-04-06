@@ -39,5 +39,7 @@ urlpatterns = [
     path('usEstudiante/rutas', views.rutasEstudiante, name="student_rutas"),
     path('usEstudiante/cursos', views.cursosEstudiante, name="student_cursos"),
     path('usEstudiante/detalleCurso', views.detalleCursoEstudiante, name="student_detallecurso"),
+    path('usEstudiante/tablero', views.tableroEstudiante, name="student_tablero"),
+    path('usEstudiante/crearRuta', views.crearRutaEstudiante, name="student_crearRuta"),
 
 ]
