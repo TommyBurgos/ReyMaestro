@@ -4,10 +4,17 @@ from user.models import User, Rol, TipoUsuario
 from django.db.models import Q
 from django.middleware.csrf import rotate_token
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST, require_GET
+
+from django.views.decorators.csrf import csrf_exempt
+
 import re
+import requests
+
 from .permissions import role_required
 from django.core.paginator import Paginator
 from .forms import UsuarioForm  # Importa el form
+from django.conf import settings
 
 from django.contrib import messages
 
@@ -138,6 +145,57 @@ def configuracionAdmin(request):
     }
     return render(request, 'usAdmin/configuracion.html', context)
 
+def jugar_vs_computadora(request):
+    token = settings.LICHESS_API_TOKEN
+
+    url = 'https://lichess.org/api/challenge/ai'
+    headers = {
+        'Authorization': f'Bearer {token}',
+        'Content-Type': 'application/x-www-form-urlencoded'
+    }
+
+    data = {
+        'level': 3,
+        'color': 'random',
+        'clock.limit': 300,
+        'clock.increment': 0
+    }
+
+    response = requests.post(url, headers=headers, data=data)
+
+    if response.status_code in [200, 201]:
+        game_url = f"https://lichess.org/{response.json()['id']}"
+        return redirect(game_url)
+    else:
+        print("Error al crear desafío:")
+        print("Código de estado:", response.status_code)
+        print("Respuesta:", response.text)
+        return redirect('accesoDenegado')
+
+
+
+@require_GET
+def obtener_estado_partida(request, game_id):
+    url = f'https://lichess.org/api/board/game/stream/{game_id}'
+    headers = {
+        'Authorization': f'Bearer {settings.LICHESS_API_TOKEN}',
+        'Accept': 'application/x-ndjson'
+    }
+
+    with requests.get(url, headers=headers, stream=True) as response:
+        if response.status_code != 200:
+            return JsonResponse({'error': 'No se pudo obtener el estado del juego'}, status=400)
+
+        # Obtenemos el último estado
+        lines = response.iter_lines()
+        for line in lines:
+            if line:
+                data = json.loads(line.decode('utf-8'))
+                if 'state' in data:
+                    return JsonResponse(data['state'])
+
+        
+
 @role_required('Administrador')
 def soporteAdmin(request):
     user = request.user
@@ -147,6 +205,103 @@ def soporteAdmin(request):
         'usuario':user.username,        
     }
     return render(request, 'usAdmin/soporte.html', context)
+
+def ajedrez_vs_ia(request):
+    return render(request, 'usAdmin/tablero_vs_ia.html')
+
+def crear_partida_ia(request):
+    token = settings.LICHESS_API_TOKEN
+    url = 'https://lichess.org/api/challenge/ai'
+    headers = {
+        'Authorization': f'Bearer {token}',
+        'Content-Type': 'application/x-www-form-urlencoded'
+    }
+    data = {
+        'level': 3,
+        'color': 'white',
+        'clock.limit': 300,
+        'clock.increment': 0
+    }
+    response = requests.post(url, headers=headers, data=data)
+    return JsonResponse(response.json(), safe=False)
+
+
+
+@csrf_exempt
+@require_POST
+def enviar_movimiento(request):
+    try:
+        data = json.loads(request.body)
+        game_id = data.get('gameId')
+        move = data.get('move')
+
+        print("🔁 Movimiento recibido:")
+        print("Game ID:", game_id)
+        print("Movimiento:", move)
+
+        url = f'https://lichess.org/api/board/game/{game_id}/move/{move}'
+        headers = {
+            'Authorization': f'Bearer {settings.LICHESS_API_TOKEN}'
+        }
+
+        response = requests.post(url, headers=headers)
+
+        print("📩 Respuesta de Lichess:", response.status_code, response.text)
+
+        if response.status_code in [200, 201]:
+            return JsonResponse({'status': 'ok', 'lichess': response.json()})
+        else:
+            return JsonResponse({
+                'status': 'error',
+                'code': response.status_code,
+                'response': response.text
+            }, status=400)
+    except Exception as e:
+        print("❌ Error procesando movimiento:", str(e))
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+@login_required
+def editarPerfil(request):
+    user = request.user
+    # lógica para mostrar o editar
+    form = UsuarioForm(request.POST or None, request.FILES or None, instance=user)    
+    imgPerfil=user.imgPerfil
+    print("Saber si entra o no al if: ",request.method == 'POST' and form.is_valid())
+    if request.method == 'POST' and form.is_valid():
+        print("Archivos recibidos:", request.FILES)
+        print("Datos del formulario:", request.POST)
+        form.save()
+        return redirect('detalleUsuarios-adm')
+    context = {
+        'imgPerfil': imgPerfil, 
+        'form': form,
+        'usuario': user,
+    }
+    return render(request, 'usAdmin/editarPerfil.html',context)
+
+from django.contrib.auth import update_session_auth_hash
+
+@login_required
+def cambiar_password(request):
+    if request.method == 'POST':
+        user = request.user
+        actual = request.POST.get('password_actual')
+        nueva = request.POST.get('nueva_password')
+        repetir = request.POST.get('repetir_password')
+
+        if not user.check_password(actual):
+            messages.error(request, 'La contraseña actual es incorrecta.')
+        elif nueva != repetir:
+            messages.error(request, 'Las nuevas contraseñas no coinciden.')
+        else:
+            user.set_password(nueva)
+            user.save()
+            update_session_auth_hash(request, user)  # Esta línea evita el logout
+            messages.success(request, '¡Tu contraseña ha sido cambiada con éxito!')
+            return redirect('editarPerfil-adm')
+
+    return redirect('editarPerfil-adm')
+
 
 
 def registroUser(request):

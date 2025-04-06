@@ -14,7 +14,8 @@ class UsuarioForm(forms.ModelForm):
             'last_name': 'Apellido',
             'email': 'Correo electrónico',
             'imgPerfil': 'Foto de perfil',
-            'is_active': 'Estado del usuario'
+            'is_active': 'Estado del usuario',
+            'password':'opciones de contraseña'
 
         }
         widgets = {
