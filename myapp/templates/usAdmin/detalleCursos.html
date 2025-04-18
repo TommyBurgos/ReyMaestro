@@ -49,10 +49,62 @@
         <div class="flex flex-1">
             <!-- Sidebar -->
             {% include 'usAdmin/baseAside.html' %}
-
             <main class="flex-1 p-6 text-white">
-                <div class="page-inner">
-                    <h2>Cursos</h2>
+                <div class="max-w-7xl mx-auto px-6 py-10">
+    
+                    <!-- Mensaje de bienvenida -->
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-gray-800 text-white">¡Hola, Admin!</h1>
+                        <p class="text-gray-500 mt-2 text-white">Aquí puedes gestionar tus cursos, subir videos y organizar el contenido de tu plataforma.</p>
+                    </div>
+                
+                    <!-- Resumen de estadísticas -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                        <a href="{% url 'listado_cursos' %}">
+                            <div class="bg-white shadow rounded-2xl p-6 hover:bg-gray-100 transition cursor-pointer">
+                                <h2 class="text-lg font-semibold text-gray-700">Cursos creados</h2>
+                                <p class="text-3xl text-blue-600 font-bold mt-2">{{ cursos.count }}</p>
+                            </div>
+                        </a>                        
+                        <div class="bg-white shadow rounded-2xl p-6">
+                            <h2 class="text-lg font-semibold text-gray-700">Videos subidos</h2>
+                            <p class="text-3xl text-green-500 font-bold mt-2">85</p>
+                        </div>
+                        <div class="bg-white shadow rounded-2xl p-6">
+                            <h2 class="text-lg font-semibold text-gray-700">Cursos en borrador</h2>
+                            <p class="text-3xl text-yellow-500 font-bold mt-2">3</p>
+                        </div>
+                    </div>
+                
+                    <!-- Botón para crear curso -->
+                    <div class="flex justify-end mb-6">
+                        <a href="{% url 'crearCurso-adm' %}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-full transition-all shadow-lg">
+                            + Crear nuevo curso
+                        </a>
+                    </div>
+                
+                    <!-- Lista de cursos -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Repetir esta tarjeta por cada curso -->
+                        <div class="bg-white rounded-2xl shadow p-5 hover:shadow-lg transition">
+                            <h3 class="text-xl font-bold text-gray-800">Curso: Python desde Cero</h3>
+                            <p class="text-gray-500 mt-2">Lecciones: 10</p>
+                            <div class="mt-4 flex justify-between">
+                                <a href="#" class="text-sm text-indigo-600 font-semibold hover:underline">Editar</a>
+                                <a href="#" class="text-sm text-gray-500 hover:underline">Ver</a>
+                            </div>
+                        </div>
+                
+                        <!-- Otra tarjeta de ejemplo -->
+                        <div class="bg-white rounded-2xl shadow p-5 hover:shadow-lg transition">
+                            <h3 class="text-xl font-bold text-gray-800">Curso: Matemáticas 1B</h3>
+                            <p class="text-gray-500 mt-2">Lecciones: 7</p>
+                            <div class="mt-4 flex justify-between">
+                                <a href="#" class="text-sm text-indigo-600 font-semibold hover:underline">Editar</a>
+                                <a href="#" class="text-sm text-gray-500 hover:underline">Ver</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </main>
 

@@ -1,19 +1,21 @@
 from django.shortcuts import render, HttpResponse, get_object_or_404, redirect
 from django.contrib.auth import login, logout, authenticate
-from user.models import User, Rol, TipoUsuario
+from user.models import User, Rol, TipoUsuario, Curso, Contenido, Modulo, Leccion
 from django.db.models import Q
 from django.middleware.csrf import rotate_token
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST, require_GET
 
 from django.views.decorators.csrf import csrf_exempt
+from django.core.files.storage import default_storage
 
 import re
 import requests
+import uuid
 
 from .permissions import role_required
 from django.core.paginator import Paginator
-from .forms import UsuarioForm  # Importa el form
+from .forms import UsuarioForm, CursoForm  # Importa el form
 from django.conf import settings
 
 from django.contrib import messages
@@ -107,13 +109,223 @@ def resetContra_usuario(request, id):
 
 @role_required('Administrador')
 def detalleCursos(request):
+    cursos = Curso.objects.all().order_by('-fecha_creacion')
     user = request.user
     imgPerfil=user.imgPerfil
     context = {                     
         'imgPerfil': imgPerfil,        
-        'usuario':user.username,        
+        'usuario':user.username,     
+        'cursos':cursos   
     }
     return render(request, 'usAdmin/detalleCursos.html', context)
+
+
+@role_required('Administrador')
+@login_required
+def crear_curso(request):
+    if request.method == 'POST':
+        print("INICIANDO LA FUNCIÓN")
+        form = CursoForm(request.POST)
+        video_file = request.FILES.get('video')
+        titulo_video = request.POST.get('titulo', '').strip()
+        descripcion_video = request.POST.get('descripcionVideo', '').strip()
+        print(form.is_valid() and video_file)
+        print(form.is_valid())
+        print(video_file)        
+        print(form)
+        print("Antes de los if")
+        print(form.is_valid() and video_file)
+        print(titulo_video)
+        print(video_file.name.endswith(('.mp4', '.webm', '.avi')))
+        print(video_file.size > 200 * 1024 * 1024)
+        if not titulo_video:
+            messages.error(request, "Debes ingresar el título del video.")
+            print("En el 1er if")
+            return render(request, 'usAdmin/crear_curso.html', {'form': form})
+
+        if not video_file.name.endswith(('.mp4', '.webm', '.avi')):
+            messages.error(request, "El formato de video no es válido.")
+            print("En el 2do if")
+            return render(request, 'usAdmin/crear_curso.html', {'form': form})
+
+        if video_file.size > 200 * 1024 * 1024:  # 200 MB
+            messages.error(request, "El video excede el tamaño máximo permitido (200MB).")
+            print("En el 3er if")
+            return render(request, 'usAdmin/crear_curso.html', {'form': form})
+
+        if form.is_valid() and video_file:
+            print("DENTRO, En el 4to if")
+            print("Antes de guardar el curso")
+            curso = form.save(commit=False)
+            curso.profesor = request.user
+            curso.save()
+            print("Curso Guardado.")
+
+            # Subir video a S3
+            ext = video_file.name.split('.')[-1]
+            video_nombre = f"videos/{uuid.uuid4()}.{ext}"  # Nombre único
+            video_path = default_storage.save(video_nombre, video_file)
+            print("Antes de general la URL")
+            # Generar URL pública
+            video_url = f"https://{settings.AWS_STORAGE_BUCKET_NAME}.s3.{settings.AWS_S3_REGION_NAME}.amazonaws.com/{video_path}"
+            print(f"Ruta creada {video_url}")
+            # Crear contenido asociado al curso
+            Contenido.objects.create(
+                curso=curso,
+                titulo=request.POST.get('tituloVideo'),
+                tipo_contenido='video',
+                url_contenido=video_url,
+                descripcion=request.POST.get('descripcionVideo')
+            )
+
+            messages.success(request, "Curso y video creados exitosamente.")
+            return redirect('detalle_curso', curso_id=curso.id)
+    else:
+        print("Estoy en el else")
+        form = CursoForm()
+    print("Llegue al final de la función")
+    return render(request, 'usAdmin/crear_curso.html', {'form': form})
+
+from django.db.models import Prefetch
+
+@role_required('Administrador')
+@login_required
+def listado_cursos(request):
+    cursos = Curso.objects.all().order_by('-fecha_creacion')
+    return render(request, 'usAdmin/listado_cursos.html', {'cursos': cursos})
+
+@role_required('Administrador')
+@login_required
+def detalle_curso(request, curso_id):
+    curso = get_object_or_404(Curso, id=curso_id)
+    contenidos = Contenido.objects.filter(curso=curso, tipo_contenido='video')
+
+    return render(request, 'usAdmin/detalle_curso.html', {
+        'curso': curso,
+        'contenidos': contenidos
+    })
+
+@role_required('Administrador')
+@login_required
+def ver_leccion(request, leccion_id):
+    leccion = get_object_or_404(Leccion, id=leccion_id)
+    modulo = leccion.modulo
+    otras_lecciones = modulo.leccion_set.all().order_by('orden')
+
+    return render(request, 'usAdmin/ver_leccion.html', {
+        'leccion': leccion,
+        'modulo': modulo,
+        'otras_lecciones': otras_lecciones,
+    })
+
+from django.utils import timezone
+
+@role_required('Administrador')
+@login_required
+def agregar_contenido(request, curso_id):
+    curso = get_object_or_404(Curso, id=curso_id)
+
+    if request.method == 'POST':
+        titulo = request.POST.get('titulo', '').strip()
+        descripcion = request.POST.get('descripcion', '').strip()
+        tipo = request.POST.get('tipo')
+        archivo = request.FILES.get('archivo')
+        texto = request.POST.get('texto', '')
+        
+        if not titulo or not tipo:
+            messages.error(request, "Título y tipo de contenido son obligatorios.")
+            return redirect('agregar_contenido', curso_id=curso.id)
+
+        # Subir archivo si corresponde
+        url_contenido = None
+        if tipo in ['video', 'documento'] and archivo:
+            ext = archivo.name.split('.')[-1]
+            nombre_unico = f"{tipo}s/{uuid.uuid4()}.{ext}"
+            path = default_storage.save(nombre_unico, archivo)
+            url_contenido = f"https://{settings.AWS_STORAGE_BUCKET_NAME}.s3.{settings.AWS_S3_REGION_NAME}.amazonaws.com/{path}"
+
+        Contenido.objects.create(
+            curso=curso,
+            titulo=titulo,
+            tipo_contenido=tipo,
+            url_contenido=url_contenido if tipo != 'texto' else None,
+            descripcion=descripcion,
+            archivo=archivo if tipo == 'documento' else None,
+            fecha_subida=timezone.now()
+        )
+
+        messages.success(request, "Contenido agregado exitosamente.")
+        return redirect('detalle_curso', curso_id=curso.id)
+
+    return render(request, 'usAdmin/agregar_contenido.html', {'curso': curso})
+
+
+@role_required('Administrador')
+@login_required
+def crear_modulo(request, curso_id):
+    curso = get_object_or_404(Curso, id=curso_id)
+
+    if request.method == 'POST':
+        titulo = request.POST.get('titulo', '').strip()
+        descripcion = request.POST.get('descripcion', '').strip()
+        orden = request.POST.get('orden', 1)
+
+        if not titulo:
+            messages.error(request, "El título del módulo es obligatorio.")
+            return redirect('crear_modulo', curso_id=curso.id)
+
+        Modulo.objects.create(
+            curso=curso,
+            titulo=titulo,
+            descripcion=descripcion,
+            orden=orden
+        )
+        messages.success(request, "Módulo creado exitosamente.")
+        return redirect('detalle_curso', curso_id=curso.id)
+
+    return render(request, 'usAdmin/crear_modulo.html', {'curso': curso})
+
+@role_required('Administrador')
+@login_required
+def crear_leccion(request, modulo_id):
+    modulo = get_object_or_404(Modulo, id=modulo_id)
+
+    if request.method == 'POST':
+        titulo = request.POST.get('titulo', '').strip()
+        tipo = request.POST.get('tipo')
+        descripcion = request.POST.get('descripcion', '').strip()
+        archivo = request.FILES.get('archivo')
+        imagen = request.FILES.get('imagen')
+        orden = request.POST.get('orden', 1)
+
+        if not titulo or not tipo:
+            messages.error(request, "Título y tipo de contenido son obligatorios.")
+            return redirect('crear_leccion', modulo_id=modulo.id)
+
+        # Subida a S3
+        url_contenido = None
+        if tipo in ['video', 'documento'] and archivo:
+            ext = archivo.name.split('.')[-1]
+            nombre_archivo = f"{tipo}s/{uuid.uuid4()}.{ext}"
+            ruta = default_storage.save(nombre_archivo, archivo)
+            url_contenido = f"https://{settings.AWS_STORAGE_BUCKET_NAME}.s3.{settings.AWS_S3_REGION_NAME}.amazonaws.com/{ruta}"
+
+        nueva_leccion = Leccion.objects.create(
+            modulo=modulo,
+            titulo=titulo,
+            tipo_contenido=tipo,
+            descripcion=descripcion,
+            url_contenido=url_contenido,
+            archivo=archivo if tipo == 'documento' else None,
+            imagen=imagen,
+            orden=orden
+        )
+
+        messages.success(request, "Lección creada correctamente.")
+        return redirect('detalle_curso', curso_id=modulo.curso.id)
+
+    return render(request, 'usAdmin/crear_leccion.html', {'modulo': modulo})
+
 
 @role_required('Administrador')
 def detallePagos(request):

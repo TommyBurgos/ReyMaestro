@@ -50,6 +50,10 @@ class Curso(models.Model):
         choices=[('basico', 'Básico'), ('intermedio', 'Intermedio'), ('avanzado', 'Avanzado')],
         default='basico'
     )
+    @property
+    def primer_video(self):
+        return self.contenido_set.filter(tipo_contenido='video').first()
+
 
     def __str__(self):
         return f"{self.titulo} ({self.get_nivel_dificultad_display()})"
