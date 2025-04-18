@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+
+    <link href="{% static 'img/logoReyMaestro3.png' %}" rel="icon">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+        
+    <!-- Fonts and icons -->
+    <script src="{% static 'js/plugin/webfont/webfont.min.js' %}"></script>
+    <script>
+      WebFont.load({
+        google: { families: ["Public Sans:300,400,500,600,700"] },
+        custom: {
+          families: [
+            "Font Awesome 5 Solid",
+            "Font Awesome 5 Regular",
+            "Font Awesome 5 Brands",
+            "simple-line-icons",
+          ],
+          urls: ["{% static 'css/fonts.min.css' %}"],
+        },
+        active: function () {
+          sessionStorage.fonts = true;
+        },
+      });
+    </script>
+
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/plugins.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/kaiadmin.min.css' %}" />
+
+    <!-- CSS Just for demo purpose, don't include it in your project -->
+    <link rel="stylesheet" href="{% static 'css/demo.css' %}" />
+    <!--CAMBIOS PROPIOS DE ESTILO-->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+<body class="bg-gradient-to-b from-gray-900 to-gray-700 min-h-screen flex flex-col">
+  {% if messages %}
+    <div id="alerta" class="fixed top-4 right-4 bg-green-500 text-white px-6 py-4 rounded-xl shadow-lg z-50">
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Navbar -->
+    {% include 'usAdmin/baseNavbar.html' %}
+    <div class="flex flex-1">
+        <!-- Sidebar -->
+        {% include 'usAdmin/baseAside.html' %}
+        <main class="flex-1 p-6 text-white">
+            <div class="max-w-6xl mx-auto py-8 px-6">
+                <h1 class="text-3xl font-bold mb-8">📚 Todos los Cursos</h1>
+        
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {% for curso in cursos %}
+                        <a href="{% url 'detalle_curso' curso.id %}" class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition overflow-hidden text-black">
+                            <div class="relative h-48 bg-gray-200">
+                                {% if curso.primer_video %}
+                                    <video class="w-full h-full object-cover" muted preload="metadata">
+                                        <source src="{{ curso.primer_video.url_contenido }}" type="video/mp4">
+                                        Tu navegador no soporta video.
+                                    </video>
+                                {% else %}
+                                    <img src="https://via.placeholder.com/640x360?text=Curso+Sin+Video" alt="Sin video" class="w-full h-full object-cover">
+                                {% endif %}
+                            </div>
+                            <div class="p-4">
+                                <h2 class="font-bold text-xl mb-1">{{ curso.titulo }}</h2>
+                                <p class="text-sm text-gray-700 mb-2">{{ curso.descripcion|truncatewords:15 }}</p>
+                                <p class="text-xs text-gray-500">Publicado: {{ curso.fecha_publicacion|date:"d M Y H:i" }}</p>
+                            </div>
+                        </a>
+                    {% empty %}
+                        <p class="text-gray-400 italic">No hay cursos registrados aún.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </main>               
+    </div>
+</body>
+</html>

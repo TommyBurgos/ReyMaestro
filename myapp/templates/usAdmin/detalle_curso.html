@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+
+    <link href="{% static 'img/logoReyMaestro3.png' %}" rel="icon">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+        
+    <!-- Fonts and icons -->
+    <script src="{% static 'js/plugin/webfont/webfont.min.js' %}"></script>
+    <script>
+      WebFont.load({
+        google: { families: ["Public Sans:300,400,500,600,700"] },
+        custom: {
+          families: [
+            "Font Awesome 5 Solid",
+            "Font Awesome 5 Regular",
+            "Font Awesome 5 Brands",
+            "simple-line-icons",
+          ],
+          urls: ["{% static 'css/fonts.min.css' %}"],
+        },
+        active: function () {
+          sessionStorage.fonts = true;
+        },
+      });
+    </script>
+
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/plugins.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/kaiadmin.min.css' %}" />
+
+    <!-- CSS Just for demo purpose, don't include it in your project -->
+    <link rel="stylesheet" href="{% static 'css/demo.css' %}" />
+    <!--CAMBIOS PROPIOS DE ESTILO-->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+<body class="bg-gradient-to-b from-gray-900 to-gray-700 min-h-screen flex flex-col">
+  {% if messages %}
+    <div id="alerta" class="fixed top-4 right-4 bg-green-500 text-white px-6 py-4 rounded-xl shadow-lg z-50">
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Navbar -->
+    {% include 'usAdmin/baseNavbar.html' %}
+    <div class="flex flex-1">
+        <!-- Sidebar -->
+        {% include 'usAdmin/baseAside.html' %}
+        <main class="flex-1 p-6 text-white">
+            <div class="max-w-7xl mx-auto px-6 py-10">
+              <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          
+                <!-- Info del curso + lista de clases -->
+                <div class="lg:col-span-2">
+                  <h1 class="text-4xl font-bold text-white mb-4">{{ curso.titulo }}</h1>
+                  <p class="text-gray-400 mb-2">Publicado: {{ curso.fecha_publicacion|date:"d M Y H:i" }}</p>
+                  <p class="text-gray-400 mb-4">Dificultad: {{ curso.get_nivel_dificultad_display }} | Estado: {{ curso.get_estado_display }}</p>
+          
+                  <p class="text-white mb-6 text-lg leading-relaxed">{{ curso.descripcion }}</p>
+          
+                  <div class="flex gap-4 mb-8">
+                    <a href="{% url 'agregar_contenido' curso.id %}" class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-full shadow">➕ Agregar Contenido</a>
+                    <a href="{% url 'crear_modulo' curso.id %}" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-full shadow">➕ Crear Módulo</a>
+                  </div>
+          
+                  <!-- Módulos del curso -->
+                  <h2 class="text-2xl font-semibold mb-4">Clases del curso</h2>
+                  {% for modulo in curso.modulo_set.all|dictsort:"orden" %}
+                    <div class="mb-6 border border-gray-700 rounded-lg p-4 bg-gray-800">
+                      <div class="flex justify-between items-center">
+                        <h3 class="text-xl font-bold text-white">{{ modulo.titulo }}</h3>
+                        <a href="{% url 'crear_leccion' modulo.id %}" class="text-sm text-blue-400 hover:underline">+ Agregar lección</a>
+                      </div>
+                      <p class="text-gray-400 mb-4">{{ modulo.descripcion }}</p>
+                      {% if modulo.leccion_set.all %}
+                        <ul class="space-y-3">
+                          {% for leccion in modulo.leccion_set.all|dictsort:"orden" %}
+                            <li class="border border-gray-700 p-3 rounded-lg bg-gray-900">
+                                <a href="{% url 'ver_leccion' leccion.id %}" class="block font-semibold text-white hover:underline">
+                                    {{ leccion.titulo }}
+                                </a>                                
+                              {% if leccion.tipo_contenido == 'video' %}
+                                <span class="text-sm text-gray-400">🎥 Video</span>
+                              {% elif leccion.tipo_contenido == 'documento' %}
+                                <span class="text-sm text-gray-400">📄 Documento</span>
+                              {% elif leccion.tipo_contenido == 'texto' %}
+                                <span class="text-sm text-gray-400">📝 Texto</span>
+                              {% endif %}
+                            </li>
+                          {% endfor %}
+                        </ul>
+                      {% else %}
+                        <p class="text-gray-500 italic">Este módulo no tiene lecciones aún.</p>
+                      {% endif %}
+                    </div>
+                  {% empty %}
+                    <p class="text-gray-500 italic">Este curso no tiene módulos aún.</p>
+                  {% endfor %}
+                </div>
+          
+                <!-- Video a la derecha -->
+                <div>
+                  {% if contenidos %}
+                    <div class="sticky top-20">
+                      <video controls class="rounded-xl shadow-xl w-full">
+                        <source src="{{ contenidos.0.url_contenido }}" type="video/mp4">
+                        Tu navegador no soporta la reproducción de video.
+                      </video>
+                    </div>
+                  {% else %}
+                    <p class="text-gray-400 italic">Este curso no tiene video de portada.</p>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </main>
+          
+    </div>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+
+    <link href="{% static 'img/logoReyMaestro3.png' %}" rel="icon">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+        
+    <!-- Fonts and icons -->
+    <script src="{% static 'js/plugin/webfont/webfont.min.js' %}"></script>
+    <script>
+      WebFont.load({
+        google: { families: ["Public Sans:300,400,500,600,700"] },
+        custom: {
+          families: [
+            "Font Awesome 5 Solid",
+            "Font Awesome 5 Regular",
+            "Font Awesome 5 Brands",
+            "simple-line-icons",
+          ],
+          urls: ["{% static 'css/fonts.min.css' %}"],
+        },
+        active: function () {
+          sessionStorage.fonts = true;
+        },
+      });
+    </script>
+
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/plugins.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/kaiadmin.min.css' %}" />
+
+    <!-- CSS Just for demo purpose, don't include it in your project -->
+    <link rel="stylesheet" href="{% static 'css/demo.css' %}" />
+    <!--CAMBIOS PROPIOS DE ESTILO-->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+<body class="bg-gradient-to-b from-gray-900 to-gray-700 min-h-screen flex flex-col">
+  {% if messages %}
+    <div id="alerta" class="fixed top-4 right-4 bg-green-500 text-white px-6 py-4 rounded-xl shadow-lg z-50">
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Navbar -->
+    {% include 'usAdmin/baseNavbar.html' %}
+    <div class="flex flex-1">
+        <!-- Sidebar -->
+        {% include 'usAdmin/baseAside.html' %}
+        <main class="flex-1 p-6 text-white">
+            <div class="max-w-3xl mx-auto py-10">
+                <h2 class="text-2xl font-bold mb-6">Agregar nuevo contenido a: {{ curso.titulo }}</h2>
+            
+                <form method="post" enctype="multipart/form-data" class="space-y-6">
+                    {% csrf_token %}
+            
+                    <div>
+                        <label class="block font-medium text-gray-700">Título del contenido</label>
+                        <input type="text" name="titulo" required class="w-full p-3 rounded-lg border text-black">
+                    </div>
+            
+                    <div>
+                        <label class="block font-medium text-gray-700">Descripción</label>
+                        <textarea name="descripcion" rows="3" class="w-full p-3 rounded-lg border text-black"></textarea>
+                    </div>
+            
+                    <div>
+                        <label class="block font-medium text-gray-700">Tipo de contenido</label>
+                        <select name="tipo" id="tipo" class="w-full p-3 rounded-lg border text-black" required onchange="mostrarCampos(this.value)">
+                            <option disabled selected>Selecciona tipo</option>
+                            <option value="video">Video</option>
+                            <option value="documento">Documento</option>
+                            <option value="texto">Texto</option>
+                        </select>
+                    </div>
+            
+                    <!-- Campo archivo -->
+                    <div id="campoArchivo" style="display: none;">
+                        <label class="block font-medium text-gray-700">Subir archivo</label>
+                        <input type="file" name="archivo" class="w-full p-3 rounded-lg border">
+                    </div>
+            
+                    <!-- Campo texto -->
+                    <div id="campoTexto" style="display: none;">
+                        <label class="block font-medium text-gray-700">Contenido textual</label>
+                        <textarea name="texto" rows="5" class="w-full p-3 rounded-lg border text-black"></textarea>
+                    </div>
+            
+                    <div class="text-center">
+                        <button type="submit" class="bg-indigo-600 text-white py-3 px-8 rounded-full font-semibold shadow hover:bg-indigo-700">
+                            Guardar contenido
+                        </button>
+                    </div>
+                </form>
+            </div>            
+            
+            <script>
+                function mostrarCampos(valor) {
+                    document.getElementById("campoArchivo").style.display = (valor === "video" || valor === "documento") ? "block" : "none";
+                    document.getElementById("campoTexto").style.display = (valor === "texto") ? "block" : "none";
+                }
+            </script>            
+
+        </main>
+
+    </div>
+</body>
+</html>

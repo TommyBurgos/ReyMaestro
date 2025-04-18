@@ -1,0 +1,149 @@
+<html>
+    <head>
+        {% load static %}
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Panel de Administración</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    
+    
+        <link href="{% static 'img/logoReyMaestro3.png' %}" rel="icon">
+    
+        <!-- Fonts and icons -->
+        <script src="{% static 'js/plugin/webfont/webfont.min.js' %}"></script>
+        <script>
+          WebFont.load({
+            google: { families: ["Public Sans:300,400,500,600,700"] },
+            custom: {
+              families: [
+                "Font Awesome 5 Solid",
+                "Font Awesome 5 Regular",
+                "Font Awesome 5 Brands",
+                "simple-line-icons",
+              ],
+              urls: ["{% static 'css/fonts.min.css' %}"],
+            },
+            active: function () {
+              sessionStorage.fonts = true;
+            },
+          });
+        </script>
+    
+        <!-- CSS Files -->
+        <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
+        <link rel="stylesheet" href="{% static 'css/plugins.min.css' %}" />
+        <link rel="stylesheet" href="{% static 'css/kaiadmin.min.css' %}" />
+    
+        <!-- CSS Just for demo purpose, don't include it in your project -->
+        <link rel="stylesheet" href="{% static 'css/demo.css' %}" />
+        <!--CAMBIOS PROPIOS DE ESTILO-->
+        <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    </head>
+    <body class="bg-gradient-to-b from-gray-900 to-gray-700 min-h-screen flex flex-col">
+        
+            <!-- Navbar -->
+            {% include 'usAdmin/baseNavbar.html' %}
+        
+        
+            <div class="flex flex-1">
+                <!-- Sidebar -->
+                {% include 'usAdmin/baseAside.html' %}
+                <main class="flex-1 p-6 text-white">
+                    <div class="max-w-4xl mx-auto px-6 py-10">
+    
+                        <!-- Título -->
+                        <div class="mb-8 text-center">
+                            <h1 class="text-3xl font-bold text-gray-800 text-white">Crear Nuevo Curso</h1>
+                            <p class="text-gray-500 mt-2 text-white">Llena los campos para configurar tu nuevo curso y subir el primer video.</p>
+                        </div>
+                    
+                        <!-- Formulario de creación -->
+                        <form method="post" action="{% url 'crearCurso-adm' %}" enctype="multipart/form-data" class="bg-white rounded-2xl shadow-lg p-8 space-y-6">
+                            {% csrf_token %}
+                        
+                            <!-- Título del curso -->
+                            <div>
+                                <label for="titulo" class="block text-sm font-medium text-gray-700">Título del Curso</label>
+                                <input type="text" name="titulo" id="titulo" placeholder="Ej. Introducción a Django"
+                                       class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-3 text-black focus:ring-indigo-500 focus:border-indigo-500">
+                            </div>
+                        
+                            <!-- Descripción -->
+                            <div>
+                                <label for="descripcion" class="block text-sm font-medium text-gray-700">Descripción</label>
+                                <textarea name="descripcion" id="descripcion" rows="3" placeholder="Describe brevemente tu curso..."
+                                          class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-3 text-black focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+                            </div>
+                        
+                            <!-- Fecha de publicación -->
+                            <div>
+                                <label for="fecha_publicacion" class="block text-sm font-medium text-gray-700">Fecha de Publicación</label>
+                                <input type="datetime-local" name="fecha_publicacion" id="fecha_publicacion"
+                                       class="mt-1 block w-full border border-gray-300 rounded-lg p-3 bg-gray-50 shadow-sm text-black">
+                            </div>
+                        
+                            <!-- Estado -->
+                            <div>
+                                <label for="estado" class="block text-sm font-medium text-gray-700">Estado del Curso</label>
+                                <select name="estado" id="estado"
+                                        class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-3 text-black focus:ring-indigo-500 focus:border-indigo-500">
+                                    <option value="borrador">Borrador</option>
+                                    <option value="publicado">Publicado</option>
+                                    <option value="inactivo">Inactivo</option>
+                                </select>
+                            </div>
+                        
+                            <!-- Nivel de dificultad -->
+                            <div>
+                                <label for="nivel_dificultad" class="block text-sm font-medium text-gray-700">Nivel de Dificultad</label>
+                                <select name="nivel_dificultad" id="nivel_dificultad"
+                                        class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-3 text-black focus:ring-indigo-500 focus:border-indigo-500">
+                                    <option value="basico">Básico</option>
+                                    <option value="intermedio">Intermedio</option>
+                                    <option value="avanzado">Avanzado</option>
+                                </select>
+                            </div>
+                        
+                            <!-- Curso destacado -->
+                            <div class="flex items-center mt-4">
+                                <input type="checkbox" name="destacado" id="destacado"
+                                       class="h-4 w-4 text-indigo-600 border-gray-300 rounded">
+                                <label for="destacado" class="ml-2 block text-sm text-gray-900">Curso destacado</label>
+                            </div>
+                        
+                            <hr class="my-6">
+                        
+                            <!-- Video inicial -->
+                            <div>
+                                <label for="video" class="block text-sm font-medium text-gray-700">Subir Video Inicial</label>
+                                <input type="file" name="video" id="video" accept="video/*"
+                                       class="mt-1 block w-full border border-gray-300 rounded-lg p-3 bg-gray-50 shadow-sm">
+                                <p class="text-xs text-gray-500 mt-1">Formatos permitidos: mp4, avi, webm.</p>
+                            </div>
+                        
+                            <div>
+                                <label for="tituloVideo" class="block text-sm font-medium text-gray-700">Título del Video</label>
+                                <input type="text" name="tituloVideo" id="tituloVideo" placeholder="Ej. Lección 1 - Bienvenida"
+                                       class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-3 text-black focus:ring-indigo-500 focus:border-indigo-500">
+                            </div>
+                        
+                            <div>
+                                <label for="descripcionVideo" class="block text-sm font-medium text-gray-700">Descripción del Video</label>
+                                <textarea name="descripcionVideo" id="descripcionVideo" rows="2" placeholder="Breve descripción del video..."
+                                          class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-3 text-black focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+                            </div>
+                        
+                            <!-- Botón guardar -->
+                            <div class="text-center pt-6">
+                                <button type="submit"
+                                        class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-8 rounded-full transition-all shadow-lg">
+                                    Guardar Curso y Subir Video
+                                </button>
+                            </div>
+                        </form>
+                        
+                    </div>
+                </main>
+    </body>
+</html>
