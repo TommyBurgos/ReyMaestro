@@ -13,13 +13,17 @@ urlpatterns = [
     path('usAdmin/detalleCursos/crearCurso', views.crear_curso, name="crearCurso-adm"),    
     path('detalleCurso/<int:curso_id>/', views.detalle_curso, name='detalle_curso'),
     path('leccion/<int:leccion_id>/ver/', views.ver_leccion, name='ver_leccion'),#Para vista ADMIN
+    path('curso/<int:curso_id>/eliminar/', views.eliminar_curso, name='eliminar_curso'),
     path('curso/<int:curso_id>/contenido/nuevo/', views.agregar_contenido, name='agregar_contenido'),
     path('curso/<int:curso_id>/modulo/nuevo/', views.crear_modulo, name='crear_modulo'),
     path('modulo/<int:modulo_id>/leccion/nueva/', views.crear_leccion, name='crear_leccion'),
 
 
     path('usAdmin/detallePagos', views.detallePagos, name="detallePagos-adm"),
+
     path('usAdmin/detalleReportes', views.detalleReportes, name="reportes-adm"),
+    path('generar-reporte/', views.generar_reporte, name='generar_reporte'),
+
     path('usAdmin/config', views.configuracionAdmin, name="configuracion-adm"),
     path('usAdmin/soporte', views.soporteAdmin, name="soporte-adm"),
     path('usAdmin/editarPerfil', views.editarPerfil, name="editarPerfil-adm"),
