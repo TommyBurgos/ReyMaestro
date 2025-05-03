@@ -7,318 +7,1212 @@
   <title>Panel Curso Detallado</title>
   <!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">-->
-  <link rel="stylesheet" href="{% static 'css/styleCurso.css' %}">
+  <!--<link rel="stylesheet" href="{% static 'css/styleCurso.css' %}">-->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
-  <body>
-    <div class="app-container">
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <img src="/static/img/logoReyMaestro3.png" alt="Logo Rey Maestro" class="logo">
-            <a href="{% url 'student_dashboard' %}" class="nav-link active" data-tooltip="Inicio"><i class="fas fa-home"></i></a>
-            <a href="rutas" class="nav-link" data-tooltip="Mis rutas"><i class="fas fa-route"></i></a>
-            <a href="progreso" class="nav-link" data-tooltip="Mi progreso"><i class="fas fa-chart-line"></i></a>
-            <a href="tablero" class="nav-link" data-tooltip="Mi tablero"><i class="fas fa-chess-board"></i></a>
-            <a href="chat" class="nav-link" data-tooltip="Chat ADA"><i class="fas fa-robot"></i></a>
-            <a href="notificaciones" class="nav-link" data-tooltip="Notificaciones"><i class="fas fa-bell"></i></a>
+  <style>
+    :root {
+        --primary-color: #3a86ff;
+        --secondary-color: #2563eb;
+        --dark-color: #1e293b;
+        --light-color: #f8fafc;
+        --gray-color: #64748b;
+        --light-gray: #e2e8f0;
+        --border-color: #334155;
+        --modal-bg: #0f172a;
+        --sidebar-bg: #1e293b;
+        --topbar-bg: #1e293b;
+        --card-bg: #ffffff;
+        --text-color: #1e293b;
+        --text-light: #f8fafc;
+        --sidebar-width: 70px;
+        --topbar-height: 80px;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Inter', sans-serif;
+    }
+
+    body {
+        background-color: #f1f5f9;
+        color: var(--text-color);
+    }
+
+    .app-container {
+        display: flex;
+        min-height: 100vh;
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+        width: var(--sidebar-width);
+        height: 100vh;
+        background-color: var(--sidebar-bg);
+        color: white;
+        position: fixed;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        padding: 25px 0;
+        z-index: 1000;
+        border-right: 1px solid var(--border-color);
+    }
+
+    .sidebar .logo {
+        width: 40px;
+        height: 40px;
+        margin: 0 auto 40px;
+        display: block;
+        object-fit: contain;
+    }
+
+    .sidebar .nav-link {
+        color: white;
+        text-decoration: none;
+        padding: 15px 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        white-space: nowrap;
+        transition: background-color 0.3s;
+        position: relative;
+        margin: 8px 0;
+    }
+
+    .sidebar .nav-link i {
+        font-size: 1.2rem;
+        text-align: center;
+    }
+
+    .sidebar .nav-link:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .sidebar .nav-link.active {
+        background-color: var(--primary-color);
+    }
+
+    .sidebar .sidebar-promo {
+        margin-top: auto;
+        padding: 0 15px;
+    }
+
+    .sidebar .text-info {
+        color: #38bdf8 !important;
+        font-size: 0.8rem;
+        margin-bottom: 10px;
+        display: block;
+        text-align: center;
+    }
+
+    .sidebar .text-light {
+        color: #f8f9fa !important;
+        font-size: 0.8rem;
+        display: block;
+        text-align: center;
+    }
+
+    /* Tooltip for sidebar */
+    .sidebar .nav-link::after {
+        content: attr(title);
+        position: absolute;
+        left: 100%;
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: var(--dark-color);
+        color: white;
+        padding: 8px 12px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        white-space: nowrap;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s, visibility 0.3s;
+        z-index: 100;
+        margin-left: 15px;
+        pointer-events: none;
+    }
+
+    .sidebar .nav-link:hover::after {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    /* Topbar/Navbar Styles */
+    .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: var(--topbar-bg);
+        padding: 0 25px;
+        position: sticky;
+        top: 0;
+        z-index: 1001;
+        height: var(--topbar-height);
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .topbar-left {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .nav-btn {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.1rem;
+        cursor: pointer;
+        padding: 10px;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.3s;
+    }
+
+    .nav-btn:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .course-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .class-number {
+        font-size: 0.8rem;
+        color: var(--light-gray);
+        margin-bottom: 2px;
+    }
+
+    .course-title {
+        font-weight: 600;
+        font-size: 1.1rem;
+        color: white;
+        margin-bottom: 2px;
+    }
+
+    .class-title {
+        font-size: 0.9rem;
+        color: var(--gray-color);
+    }
+
+    .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .view-classes-btn {
+        background-color: white;
+        color: var(--text-color);
+        border: none;
+        padding: 8px 15px;
+        border-radius: 5px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .view-classes-btn i {
+        font-size: 1rem;
+    }
+
+    .view-classes-btn:hover {
+        background-color: #e2e8f0;
+    }
+
+    .btn-exam {
+        background-color: white;
+        color: var(--text-color);
+        border: none;
+        padding: 8px 15px;
+        border-radius: 5px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-exam i {
+        font-size: 1rem;
+    }
+
+    .btn-exam:hover {
+        background-color: #e2e8f0;
+    }
+
+    /* Main Content Styles */
+    .main-content {
+        margin-left: var(--sidebar-width);
+        flex: 1;
+        padding-bottom: 40px;
+    }
+
+    .content-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 20px;
+        padding: 20px;
+    }
+
+    /* Video Column Styles */
+    .video-column {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .video-container {
+        background-color: var(--card-bg);
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        padding: 25px;
+    }
+
+    .video-header h1 {
+        font-size: 1.5rem;
+        margin-bottom: 5px;
+        color: var(--text-color);
+    }
+
+    .video-header h2 {
+        font-size: 1.1rem;
+        font-weight: 400;
+        color: var(--gray-color);
+        margin-bottom: 15px;
+    }
+
+    .video-header .instructor {
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: var(--gray-color);
+        margin-bottom: 15px;
+        text-transform: uppercase;
+    }
+
+    .video-wrapper {
+        position: relative;
+        padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+        height: 0;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .video-wrapper iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+
+    /* Summary Section */
+    .summary-section {
+        margin-top: 20px;
+    }
+
+    .summary-section h3 {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+        color: var(--text-color);
+    }
+
+    .summary-section p {
+        font-size: 0.95rem;
+        line-height: 1.5;
+        margin-bottom: 10px;
+        color: var(--gray-color);
+    }
+
+    .more-info-btn {
+        background: none;
+        border: none;
+        color: var(--primary-color);
+        font-size: 0.9rem;
+        cursor: pointer;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .more-info-btn i {
+        font-size: 0.8rem;
+    }
+
+    .more-info-btn:hover {
+        text-decoration: underline;
+    }
+
+    .additional-info {
+        margin-top: 10px;
+        padding: 10px;
+        background-color: var(--light-gray);
+        border-radius: 5px;
+        display: none;
+    }
+
+    .additional-info p {
+        margin-bottom: 10px;
+    }
+
+    /* Course Info Section */
+    .course-info {
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid var(--light-gray);
+    }
+
+    .course-info h3 {
+        font-size: 1.2rem;
+        margin-bottom: 15px;
+        color: var(--text-color);
+    }
+
+    .info-details p {
+        font-size: 0.95rem;
+        margin-bottom: 5px;
+        color: var(--gray-color);
+    }
+
+    .info-details strong {
+        color: var(--text-color);
+    }
+
+    .continue-reading-btn {
+        background: none;
+        border: none;
+        color: var(--primary-color);
+        font-size: 0.9rem;
+        cursor: pointer;
+        padding: 0;
+        margin-top: 10px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .continue-reading-btn i {
+        font-size: 0.8rem;
+    }
+
+    .continue-reading-btn:hover {
+        text-decoration: underline;
+    }
+
+    .extended-info {
+        margin-top: 10px;
+        padding: 10px;
+        background-color: var(--light-gray);
+        border-radius: 5px;
+        display: none;
+    }
+
+    .extended-info p {
+        margin-bottom: 10px;
+    }
+
+    /* Discussion Column Styles */
+    .discussion-column {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .discussion-container {
+        background-color: var(--card-bg);
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
+
+    /* Progress Container */
+    .progress-container {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .progress-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .progress-title {
+        font-size: 1.1rem;
+        font-weight: 500;
+    }
+
+    .progress-percent {
+        font-weight: 600;
+        color: var(--primary-color);
+    }
+
+    .classes-progress {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .class-progress-item {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .class-number-circle {
+        width: 24px;
+        height: 24px;
+        background-color: var(--primary-color);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        flex-shrink: 0;
+    }
+
+    .class-video {
+        width: 60px;
+        height: 40px;
+        border-radius: 4px;
+        background-color: #ddd;
+        overflow: hidden;
+        flex-shrink: 0;
+    }
+
+    .class-video img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .class-info {
+        flex: 1;
+    }
+
+    .class-name {
+        font-weight: 500;
+        margin-bottom: 2px;
+    }
+
+    .class-duration {
+        font-size: 0.8rem;
+        color: var(--gray-color);
+    }
+
+    .current-class {
+        color: var(--primary-color);
+        font-weight: 500;
+    }
+
+    .progress-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .progress-btn {
+        flex: 1;
+        background-color: white;
+        color: var(--text-color);
+        border: 1px solid var(--light-gray);
+        padding: 10px;
+        border-radius: 5px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .progress-btn i {
+        font-size: 1rem;
+    }
+
+    .progress-btn:hover {
+        background-color: var(--light-gray);
+    }
+
+    /* Discussion Tabs */
+    .discussion-tabs {
+        display: flex;
+        border-bottom: 1px solid var(--light-gray);
+        margin-bottom: 20px;
+    }
+
+    .tab-btn {
+        background: none;
+        border: none;
+        padding: 10px 15px;
+        margin-right: 5px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        color: var(--gray-color);
+        position: relative;
+    }
+
+    .tab-btn.active {
+        color: var(--primary-color);
+        font-weight: 500;
+    }
+
+    .tab-btn.active::after {
+        content: '';
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background-color: var(--primary-color);
+    }
+
+    /* Comments Section */
+    .comments-section {
+        margin-top: 10px;
+    }
+
+    .comment {
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid var(--light-gray);
+        display: none;
+    }
+
+    .comment[data-tab="all"], .comment.active {
+        display: block;
+    }
+
+    .comment:last-child {
+        border-bottom: none;
+    }
+
+    .comment-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .comment-author {
+        font-weight: 500;
+        margin-right: 10px;
+        font-size: 0.9rem;
+    }
+
+    .comment-meta {
+        font-size: 0.8rem;
+        color: var(--gray-color);
+    }
+
+    .comment-content {
+        margin-bottom: 10px;
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+
+    .comment-actions .reply-btn {
+        background: none;
+        border: none;
+        color: var(--gray-color);
+        font-size: 0.85rem;
+        cursor: pointer;
+        padding: 0;
+    }
+
+    .comment-actions .reply-btn:hover {
+        color: var(--primary-color);
+    }
+
+    /* Ask Question Section */
+    .ask-question {
+        margin-top: 30px;
+    }
+
+    .ask-question p {
+        margin-bottom: 10px;
+        font-size: 0.95rem;
+        color: var(--text-color);
+    }
+
+    .question-input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid var(--light-gray);
+        border-radius: 5px;
+        margin-bottom: 10px;
+    }
+
+    .ask-btn {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 5px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .ask-btn:hover {
+        background-color: var(--secondary-color);
+    }
+
+    /* Resources Section */
+    .resources-section {
+        background-color: var(--card-bg);
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
+
+    .resources-section h3 {
+        font-size: 1.2rem;
+        margin-bottom: 15px;
+        color: var(--text-color);
+    }
+
+    .resources-list {
+        list-style: none;
+    }
+
+    .resources-list li {
+        margin-bottom: 10px;
+    }
+
+    .resource-link {
+        display: flex;
+        align-items: center;
+        color: var(--text-color);
+        text-decoration: none;
+        font-size: 0.95rem;
+        padding: 8px 0;
+        transition: color 0.3s;
+    }
+
+    .resource-link:hover {
+        color: var(--primary-color);
+    }
+
+    .resource-link i {
+        margin-right: 10px;
+        font-size: 1.2rem;
+        width: 24px;
+        text-align: center;
+        color: var(--primary-color);
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 1024px) {
+        .content-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .topbar {
+            padding: 0 15px;
+            flex-wrap: wrap;
+            height: auto;
+            padding: 10px 15px;
+        }
+        
+        .topbar-left, .topbar-right {
+            width: 100%;
+            justify-content: space-between;
+        }
+        
+        .topbar-left {
+            margin-bottom: 10px;
+        }
+        
+        .content-grid {
+            padding: 15px;
+        }
+        
+        .video-container, .discussion-container, .resources-section {
+            padding: 15px;
+        }
+        
+        .topbar-right {
+            gap: 10px;
+        }
+        
+        .view-classes-btn, .btn-exam {
+            padding: 6px 12px;
+            font-size: 0.9rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .sidebar {
+            width: 60px;
+            padding: 15px 0;
+        }
+        
+        .main-content {
+            margin-left: 60px;
+        }
+        
+        .nav-btn {
+            width: 36px;
+            height: 36px;
+            padding: 8px;
+        }
+        
+        .progress-actions {
+            flex-direction: column;
+        }
+    }
+</style>
+</head>
+<body>
+<div class="app-container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <img src="/static/img/logoReyMaestro3.png" alt="Logo Rey Maestro" class="logo">
+        <a href="#" class="nav-link active" title="Inicio"><i class="fas fa-home"></i></a>
+        <a href="#" class="nav-link" title="Mis rutas"><i class="fas fa-route"></i></a>
+        <a href="#" class="nav-link" title="Mi progreso"><i class="fas fa-chart-line"></i></a>
+        <a href="#" class="nav-link" title="Mi tablero"><i class="fas fa-chess-board"></i></a>
+        <a href="#" class="nav-link" title="Chat ADA"><i class="fas fa-robot"></i></a>
+        <a href="#" class="nav-link" title="Notificaciones"><i class="fas fa-bell"></i></a>
+        <div class="sidebar-promo">
+            <a class="nav-link text-info">¡Grandes maestros empezaron aquí!</a>
+            <a class="nav-link text-light" href="#">Conoce más →</a>
         </div>
+    </div>
 
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Navbar -->
-            <nav class="topbar">
-                <div class="topbar-left">
-                    <span class="course-title">Taller de Pitch para Startups</span>
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Navbar -->
+        <nav class="topbar">
+            <div class="topbar-left">
+                <button class="nav-btn back-btn"><i class="fas fa-chevron-left"></i></button>
+                <div class="course-info">
+                    <span class="class-number">Clase 5 de 5</span>
+                    <h1 class="course-title">Taller de Ajedrez para Startups</h1>
+                    <span class="class-title">Estrategias de Finales con Torre</span>
                 </div>
-                <div class="topbar-right">
-                    <div class="course-progress">
-                        <span class="progress-number">702</span>
-                        <span class="progress-separator">/</span>
-                        <span class="progress-total">745</span>
-                    </div>
-                    <button class="btn-exam">Tomar examen</button>
-                    <div class="user-profile">
-                        <img src="https://via.placeholder.com/40x40" alt="Perfil" class="profile-pic">
-                    </div>
-                </div>
-            </nav>
+            </div>
+            <div class="topbar-right">
+                <button class="nav-btn translate-btn"><i class="fas fa-language"></i></button>
+                <button class="nav-btn report-btn"><i class="fas fa-flag"></i></button>
+                <button class="view-classes-btn"><i class="fas fa-list"></i> Ver clases</button>
+                <button class="btn-exam"><i class="fas fa-edit"></i> Tomar examen</button>
+            </div>
+        </nav>
 
-            <!-- Main Content Grid -->
-            <div class="content-grid">
-                <!-- Left Column (Video) -->
-                <div class="video-column">
-                    <div class="video-container">
-                        <div class="video-header">
-                            <h1>Clase 5 de 5 - Taller de Pitch para Startups</h1>
-                            <h2>Cómo hablar de tu startup en cualquier contexto</h2>
-                            <div class="instructor">
-                                <h3>SANTIAGO GÓMEZ</h3>
-                            </div>
-                        </div>
-                        
-                        <div class="video-wrapper">
-                            <iframe src="https://www.youtube.com/embed/7E4mRq1fJcg" frameborder="0" allowfullscreen></iframe>
-                        </div>
-
-                        <!-- Summary Section -->
-                        <div class="summary-section">
-                            <h3>Resumen</h3>
-                            <p>Nota: Sunai fue la startup ganadora del DemoDay de Plazzi en 2020.</p>
-                            <a href="#" class="more-info">Más info acá</a>
-                        </div>
-
-                        <!-- Course Info -->
-                        <div class="course-info">
-                            <h3>Taller de Pitch para Startups</h3>
-                            <div class="info-details">
-                                <p><strong>Dean:</strong> Juliano Butty</p>
-                                <p><strong>Faculty Manager:</strong> Santiago Gómez</p>
-                                <p><strong>Profesor:</strong> Santiago Gómez</p>
-                            </div>
-                            <a href="#" class="continue-reading">Continuar leyendo →</a>
+        <!-- Main Content Grid -->
+        <div class="content-grid">
+            <!-- Left Column (Video) -->
+            <div class="video-column">
+                <div class="video-container">
+                    <div class="video-header">
+                        <h1>Clase 5 de 5 - Taller de Ajedrez para Startups</h1>
+                        <h2>Estrategias de Finales con Torre</h2>
+                        <div class="instructor">
+                            <h3>MAGNUS CARLSEN</h3>
                         </div>
                     </div>
-                </div>
+                    
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/x4R2EPkYzZk" frameborder="0" allowfullscreen></iframe>
+                    </div>
 
-                <!-- Right Column (Discussion) -->
-                <div class="discussion-column">
-                    <div class="discussion-container">
-                        <!-- Progress -->
-                        <div class="progress-container">
-                            <div class="progress-bar" style="width: 70%;"></div>
-                            <span class="progress-text">70% / 7:45</span>
-                        </div>
-
-                        <!-- Discussion Tabs -->
-                        <div class="discussion-tabs">
-                            <button class="tab-btn active">Todos</button>
-                            <button class="tab-btn">Preguntas</button>
-                            <button class="tab-btn">Apuntes</button>
-                            <button class="tab-btn">Más votados</button>
-                        </div>
-
-                        <!-- Comments Section -->
-                        <div class="comments-section">
-                            <div class="comment">
-                                <div class="comment-header">
-                                    <input type="checkbox" id="comment1">
-                                    <label for="comment1" class="comment-checkbox"></label>
-                                    <span class="comment-author">Carlos Rodríguez</span>
-                                    <span class="comment-meta">Estudiante • hace 2 años</span>
-                                </div>
-                                <div class="comment-content">
-                                    <p>Always be pitching, no matter who asks you.</p>
-                                </div>
-                                <div class="comment-actions">
-                                    <button class="reply-btn">Responder</button>
-                                </div>
-                            </div>
-
-                            <div class="comment">
-                                <div class="comment-header">
-                                    <input type="checkbox" id="comment2">
-                                    <label for="comment2" class="comment-checkbox"></label>
-                                    <span class="comment-author">Paul Siccha</span>
-                                    <span class="comment-meta">Estudiante • hace 2 años</span>
-                                </div>
-                                <div class="comment-content">
-                                    <p>No importa quien te lo pregunte.</p>
-                                </div>
-                                <div class="comment-actions">
-                                    <button class="reply-btn">Responder</button>
-                                </div>
-                            </div>
-
-                            <div class="comment">
-                                <div class="comment-header">
-                                    <input type="checkbox" id="comment3">
-                                    <label for="comment3" class="comment-checkbox"></label>
-                                    <span class="comment-author">Patricio Sánchez Fernández</span>
-                                    <span class="comment-meta">Estudiante • hace 9 meses</span>
-                                </div>
-                                <div class="comment-content">
-                                    <p>Oye que buena anécdota, como para contarla en reuniones y con amigos también.</p>
-                                </div>
-                                <div class="comment-actions">
-                                    <button class="reply-btn">Responder</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Ask Question -->
-                        <div class="ask-question">
-                            <p>¿Tienes preguntas sobre la clase? Obtén respuesta inmediata</p>
-                            <button class="ask-btn">Preguntar</button>
+                    <!-- Summary Section -->
+                    <div class="summary-section">
+                        <h3>Resumen</h3>
+                        <p>Nota: Esta estrategia fue utilizada por Magnus Carlsen en el Campeonato Mundial de 2018.</p>
+                        <button class="more-info-btn"><i class="fas fa-chevron-right"></i> Más info acá</button>
+                        <div class="additional-info" id="additionalInfo">
+                            <p>En esta clase aprenderás los fundamentos de los finales de torre, una de las posiciones más comunes en el ajedrez competitivo. Dominar estos finales puede significar la diferencia entre ganar y perder partidas igualadas.</p>
+                            <p>Carlsen demostró la eficacia de esta técnica en su match contra Caruana en 2018, donde convirtió una posición igualada en victoria gracias a su dominio de los finales de torre.</p>
                         </div>
                     </div>
 
-                    <!-- Additional Resources -->
-                    <div class="resources-section">
-                        <h3>Recursos adicionales</h3>
-                        <ul class="resources-list">
-                            <li>
-                                <a href="https://example.com/resource1.pdf" target="_blank" class="resource-link">
-                                    <i class="far fa-file-pdf"></i>
-                                    <span>Guía completa de pitch para startups (PDF)</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="https://example.com/resource2.mp4" target="_blank" class="resource-link">
-                                    <i class="far fa-file-video"></i>
-                                    <span>Ejemplos de pitch exitosos (Video)</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="https://example.com/resource3.pdf" target="_blank" class="resource-link">
-                                    <i class="far fa-file-pdf"></i>
-                                    <span>Plantilla de pitch deck (PDF)</span>
-                                </a>
-                            </li>
-                        </ul>
+                    <!-- Course Info -->
+                    <div class="course-info">
+                        <h3>Taller de Ajedrez para Startups</h3>
+                        <div class="info-details">
+                            <p><strong>Dean:</strong> Garry Kasparov</p>
+                            <p><strong>Faculty Manager:</strong> Magnus Carlsen</p>
+                            <p><strong>Profesor:</strong> Magnus Carlsen</p>
+                        </div>
+                        <button class="continue-reading-btn"><i class="fas fa-chevron-right"></i> Continuar leyendo →</button>
+                        <div class="extended-info" id="extendedInfo">
+                            <p>Este curso está diseñado para emprendedores que quieren aplicar las estrategias del ajedrez en sus negocios. Cada movimiento en el tablero tiene su equivalente en el mundo de los negocios.</p>
+                            <p>El módulo actual se enfoca en los finales de partida, donde la precisión y el cálculo son fundamentales, al igual que en las etapas finales de una startup.</p>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- View Classes Button -->
-            <button class="view-classes-btn" id="viewClassesBtn">Ver clases</button>
-
-            <!-- Classes Modal -->
-            <div class="classes-modal" id="classesModal">
-                <div class="modal-content">
-                    <span class="close-modal">&times;</span>
-                    <h2>Progreso del curso</h2>
-                    <div class="course-progress-badge">100%</div>
-                    
-                    <div class="classes-list">
-                        <div class="class-item">
-                            <h3>Cómo hacer el pitch de tu startup</h3>
-                            <ul class="class-sublist">
-                                <li>
-                                    <span>Pitch de 60 Segundos para Startups: Estrategias y Ejemplos Prácticos</span>
-                                    <span class="class-duration">11:09</span>
-                                </li>
-                                <li>
-                                    <span>Cómo hacer un pitch de 3 minutos para startups exitoso</span>
-                                    <span class="class-duration">08:05</span>
-                                </li>
-                                <li>
-                                    <span>Cómo estructurar y mejorar un pitch de cinco minutos</span>
-                                    <span class="class-duration">07:05</span>
-                                </li>
-                                <li>
-                                    <span>Pitch efectivo para startups en etapa pre-seed</span>
-                                    <span class="class-duration">04:23</span>
-                                </li>
-                                <li class="current-class">
-                                    <span>Cómo hacer un Pitch Casual para Startups</span>
-                                    <span class="class-duration">07:45</span>
-                                </li>
-                            </ul>
+            <!-- Right Column (Discussion) -->
+            <div class="discussion-column">
+                <!-- Progress Section -->
+                <div class="progress-container">
+                    <div class="progress-header">
+                        <span class="progress-title">Progreso del curso</span>
+                        <span class="progress-percent">100%</span>
+                    </div>
+                    <div class="classes-progress">
+                        <div class="class-progress-item">
+                            <div class="class-number-circle">1</div>
+                            <div class="class-video">
+                                <img src="https://i.ytimg.com/vi/7E4mRq1fJcg/hqdefault.jpg" alt="Miniatura de video">
+                            </div>
+                            <div class="class-info">
+                                <div class="class-name">Fundamentos del ajedrez para negocios</div>
+                                <div class="class-duration">11:09</div>
+                            </div>
+                        </div>
+                        <div class="class-progress-item">
+                            <div class="class-number-circle">2</div>
+                            <div class="class-video">
+                                <img src="https://i.ytimg.com/vi/7E4mRq1fJcg/hqdefault.jpg" alt="Miniatura de video">
+                            </div>
+                            <div class="class-info">
+                                <div class="class-name">Aperturas estratégicas para emprendedores</div>
+                                <div class="class-duration">08:05</div>
+                            </div>
+                        </div>
+                        <div class="class-progress-item">
+                            <div class="class-number-circle">3</div>
+                            <div class="class-video">
+                                <img src="https://i.ytimg.com/vi/7E4mRq1fJcg/hqdefault.jpg" alt="Miniatura de video">
+                            </div>
+                            <div class="class-info">
+                                <div class="class-name">El medio juego: toma de decisiones</div>
+                                <div class="class-duration">07:05</div>
+                            </div>
+                        </div>
+                        <div class="class-progress-item">
+                            <div class="class-number-circle">4</div>
+                            <div class="class-video">
+                                <img src="https://i.ytimg.com/vi/7E4mRq1fJcg/hqdefault.jpg" alt="Miniatura de video">
+                            </div>
+                            <div class="class-info">
+                                <div class="class-name">Tácticas avanzadas para startups</div>
+                                <div class="class-duration">04:23</div>
+                            </div>
+                        </div>
+                        <div class="class-progress-item">
+                            <div class="class-number-circle">5</div>
+                            <div class="class-video">
+                                <img src="https://i.ytimg.com/vi/x4R2EPkYzZk/hqdefault.jpg" alt="Miniatura de video">
+                            </div>
+                            <div class="class-info">
+                                <div class="class-name current-class">Estrategias de Finales con Torre</div>
+                                <div class="class-duration">07:45</div>
+                            </div>
                         </div>
                     </div>
-                    <button class="take-exam-btn">Tomar examen</button>
+                    <div class="progress-actions">
+                        <button class="progress-btn"><i class="fas fa-poll"></i> Encuesta de satisfacción</button>
+                        <button class="progress-btn"><i class="fas fa-edit"></i> Tomar examen</button>
+                    </div>
+                </div>
+
+                <div class="discussion-container">
+                    <!-- Discussion Tabs -->
+                    <div class="discussion-tabs">
+                        <button class="tab-btn active" data-tab="all">Todos</button>
+                        <button class="tab-btn" data-tab="questions">Preguntas</button>
+                        <button class="tab-btn" data-tab="notes">Apuntes</button>
+                        <button class="tab-btn" data-tab="top">Más votados</button>
+                    </div>
+
+                    <!-- Comments Section -->
+                    <div class="comments-section">
+                        <div class="comment active" data-tab="all">
+                            <div class="comment-header">
+                                <span class="comment-author">Carlos Rodríguez</span>
+                                <span class="comment-meta">Estudiante • hace 2 años</span>
+                            </div>
+                            <div class="comment-content">
+                                <p>En ajedrez, como en los negocios, siempre debes estar preparado para explicar tu estrategia.</p>
+                            </div>
+                            <div class="comment-actions">
+                                <button class="reply-btn">Responder</button>
+                            </div>
+                        </div>
+
+                        <div class="comment" data-tab="all" data-tab="questions">
+                            <div class="comment-header">
+                                <span class="comment-author">Ana Martínez</span>
+                                <span class="comment-meta">Estudiante • hace 1 año</span>
+                            </div>
+                            <div class="comment-content">
+                                <p>¿Cómo se aplica esta estrategia en negocios con múltiples competidores?</p>
+                            </div>
+                            <div class="comment-actions">
+                                <button class="reply-btn">Responder</button>
+                            </div>
+                        </div>
+
+                        <div class="comment" data-tab="all" data-tab="notes">
+                            <div class="comment-header">
+                                <span class="comment-author">Luis Fernández</span>
+                                <span class="comment-meta">Estudiante • hace 6 meses</span>
+                            </div>
+                            <div class="comment-content">
+                                <p>Apunte clave: La torre necesita espacio para ser efectiva, igual que los equipos en una startup.</p>
+                            </div>
+                            <div class="comment-actions">
+                                <button class="reply-btn">Responder</button>
+                            </div>
+                        </div>
+
+                        <div class="comment" data-tab="all" data-tab="top">
+                            <div class="comment-header">
+                                <span class="comment-author">Patricio Sánchez Fernández</span>
+                                <span class="comment-meta">Estudiante • hace 9 meses</span>
+                            </div>
+                            <div class="comment-content">
+                                <p>Excelente ejemplo de final de torre, perfecto para compartir con amigos en el club de ajedrez.</p>
+                            </div>
+                            <div class="comment-actions">
+                                <button class="reply-btn">Responder</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ask Question -->
+                    <div class="ask-question">
+                        <p>¿Tienes preguntas sobre la clase? Obtén respuesta inmediata</p>
+                        <input type="text" class="question-input" placeholder="Escribe tu pregunta aquí...">
+                        <button class="ask-btn">Preguntar</button>
+                    </div>
+                </div>
+
+                <!-- Additional Resources -->
+                <div class="resources-section">
+                    <h3>Recursos adicionales</h3>
+                    <ul class="resources-list">
+                        <li>
+                            <a href="https://www.chess.com/article/view/the-rook-endgame-essential-positions" target="_blank" class="resource-link">
+                                <i class="far fa-file-pdf"></i>
+                                <span>Finales de torre esenciales (PDF)</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.youtube.com/watch?v=7E4mRq1fJcg" target="_blank" class="resource-link">
+                                <i class="far fa-file-video"></i>
+                                <span>Finales de torre explicados (Video)</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.chess.com/article/view/rook-endgame-strategy" target="_blank" class="resource-link">
+                                <i class="far fa-file-pdf"></i>
+                                <span>Estrategias para finales de torre (PDF)</span>
+                            </a>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-          // View Classes Button
-          const viewClassesBtn = document.getElementById('viewClassesBtn');
-          const classesModal = document.getElementById('classesModal');
-          const closeModal = document.querySelector('.close-modal');
-          
-          viewClassesBtn.addEventListener('click', function() {
-              classesModal.style.display = 'flex';
-              document.body.style.overflow = 'hidden';
-          });
-          
-          closeModal.addEventListener('click', function() {
-              classesModal.style.display = 'none';
-              document.body.style.overflow = 'auto';
-          });
-          
-          window.addEventListener('click', function(event) {
-              if (event.target === classesModal) {
-                  classesModal.style.display = 'none';
-                  document.body.style.overflow = 'auto';
-              }
-          });
-          
-          // Ask Question Button
-          const askBtn = document.querySelector('.ask-btn');
-          askBtn.addEventListener('click', function() {
-              const question = prompt('Escribe tu pregunta sobre la clase:');
-              if (question) {
-                  alert('Tu pregunta ha sido enviada: ' + question);
-                  
-                  // Add the new question to the comments section
-                  const commentsSection = document.querySelector('.comments-section');
-                  const newComment = document.createElement('div');
-                  newComment.className = 'comment';
-                  newComment.innerHTML = `
-                      <div class="comment-header">
-                          <input type="checkbox" id="comment-new">
-                          <label for="comment-new" class="comment-checkbox"></label>
-                          <span class="comment-author">Tú</span>
-                          <span class="comment-meta">Ahora</span>
-                      </div>
-                      <div class="comment-content">
-                          <p>${question}</p>
-                      </div>
-                      <div class="comment-actions">
-                          <button class="reply-btn">Responder</button>
-                      </div>
-                  `;
-                  
-                  commentsSection.prepend(newComment);
-              }
-          });
-          
-          // Reply buttons functionality
-          document.addEventListener('click', function(e) {
-              if (e.target.classList.contains('reply-btn')) {
-                  const commentContent = e.target.closest('.comment').querySelector('.comment-content p').textContent;
-                  const reply = prompt('Escribe tu respuesta:', `Re: ${commentContent}`);
-                  
-                  if (reply) {
-                      const comment = e.target.closest('.comment');
-                      const newReply = document.createElement('div');
-                      newReply.className = 'comment';
-                      newReply.style.marginLeft = '20px';
-                      newReply.style.borderLeft = '2px solid #3a86ff';
-                      newReply.style.paddingLeft = '10px';
-                      newReply.innerHTML = `
-                          <div class="comment-header">
-                              <input type="checkbox" id="reply-new">
-                              <label for="reply-new" class="comment-checkbox"></label>
-                              <span class="comment-author">Tú</span>
-                              <span class="comment-meta">Ahora</span>
-                          </div>
-                          <div class="comment-content">
-                              <p>${reply}</p>
-                          </div>
-                      `;
-                      
-                      comment.parentNode.insertBefore(newReply, comment.nextSibling);
-                  }
-              }
-          });
-          
-          // Tab switching functionality
-          const tabBtns = document.querySelectorAll('.tab-btn');
-          tabBtns.forEach(btn => {
-              btn.addEventListener('click', function() {
-                  tabBtns.forEach(b => b.classList.remove('active'));
-                  this.classList.add('active');
-                  
-                  // In a real app, you would filter comments based on the selected tab
-                  console.log(`Mostrando: ${this.textContent}`);
-              });
-          });
-      });
-    </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // More Info Button
+        const moreInfoBtn = document.querySelector('.more-info-btn');
+        const additionalInfo = document.getElementById('additionalInfo');
+        
+        moreInfoBtn.addEventListener('click', function() {
+            if (additionalInfo.style.display === 'block') {
+                additionalInfo.style.display = 'none';
+                moreInfoBtn.innerHTML = '<i class="fas fa-chevron-right"></i> Más info acá';
+            } else {
+                additionalInfo.style.display = 'block';
+                moreInfoBtn.innerHTML = '<i class="fas fa-chevron-down"></i> Menos info';
+            }
+        });
+        
+        // Continue Reading Button
+        const continueReadingBtn = document.querySelector('.continue-reading-btn');
+        const extendedInfo = document.getElementById('extendedInfo');
+        
+        continueReadingBtn.addEventListener('click', function() {
+            if (extendedInfo.style.display === 'block') {
+                extendedInfo.style.display = 'none';
+                continueReadingBtn.innerHTML = '<i class="fas fa-chevron-right"></i> Continuar leyendo →';
+            } else {
+                extendedInfo.style.display = 'block';
+                continueReadingBtn.innerHTML = '<i class="fas fa-chevron-down"></i> Mostrar menos';
+            }
+        });
+        
+        // Tab switching functionality
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Remove active class from all buttons
+                tabBtns.forEach(b => b.classList.remove('active'));
+                
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                const tabName = this.getAttribute('data-tab');
+                const comments = document.querySelectorAll('.comment');
+                
+                comments.forEach(comment => {
+                    comment.style.display = 'none';
+                });
+                
+                // Show all comments for "all" tab
+                if (tabName === 'all') {
+                    document.querySelectorAll('.comment[data-tab="all"]').forEach(comment => {
+                        comment.style.display = 'block';
+                    });
+                } 
+                // Show only comments for the selected tab
+                else {
+                    document.querySelectorAll(`.comment[data-tab="${tabName}"]`).forEach(comment => {
+                        comment.style.display = 'block';
+                    });
+                }
+            });
+        });
+        
+        // Ask Question Button
+        const askBtn = document.querySelector('.ask-btn');
+        askBtn.addEventListener('click', function() {
+            const questionInput = document.querySelector('.question-input');
+            if (questionInput.value.trim() !== '') {
+                // Add the new question to the comments section
+                const commentsSection = document.querySelector('.comments-section');
+                const newComment = document.createElement('div');
+                newComment.className = 'comment';
+                newComment.setAttribute('data-tab', 'all');
+                newComment.setAttribute('data-tab', 'questions');
+                newComment.innerHTML = `
+                    <div class="comment-header">
+                        <span class="comment-author">Tú</span>
+                        <span class="comment-meta">Ahora</span>
+                    </div>
+                    <div class="comment-content">
+                        <p>${questionInput.value}</p>
+                    </div>
+                    <div class="comment-actions">
+                        <button class="reply-btn">Responder</button>
+                    </div>
+                `;
+                
+                commentsSection.prepend(newComment);
+                questionInput.value = '';
+                
+                // Switch to questions tab
+                document.querySelector('.tab-btn[data-tab="questions"]').click();
+            }
+        });
+        
+        // Reply buttons functionality
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('reply-btn')) {
+                const commentContent = e.target.closest('.comment').querySelector('.comment-content p').textContent;
+                const replyInput = document.createElement('input');
+                replyInput.type = 'text';
+                replyInput.className = 'question-input';
+                replyInput.placeholder = 'Escribe tu respuesta aquí...';
+                replyInput.style.marginTop = '10px';
+                
+                const replyBtn = document.createElement('button');
+                replyBtn.className = 'ask-btn';
+                replyBtn.textContent = 'Responder';
+                replyBtn.style.marginTop = '5px';
+                
+                const replyContainer = document.createElement('div');
+                replyContainer.style.marginLeft = '20px';
+                replyContainer.style.marginTop = '10px';
+                replyContainer.appendChild(replyInput);
+                replyContainer.appendChild(replyBtn);
+                
+                replyBtn.addEventListener('click', function() {
+                    if (replyInput.value.trim() !== '') {
+                        const comment = e.target.closest('.comment');
+                        const newReply = document.createElement('div');
+                        newReply.className = 'comment';
+                        newReply.setAttribute('data-tab', 'all');
+                        newReply.style.marginLeft = '20px';
+                        newReply.style.borderLeft = '2px solid #3a86ff';
+                        newReply.style.paddingLeft = '10px';
+                        newReply.innerHTML = `
+                            <div class="comment-header">
+                                <span class="comment-author">Tú</span>
+                                <span class="comment-meta">Ahora</span>
+                            </div>
+                            <div class="comment-content">
+                                <p>${replyInput.value}</p>
+                            </div>
+                        `;
+                        
+                        comment.parentNode.insertBefore(newReply, comment.nextSibling);
+                        replyContainer.remove();
+                    }
+                });
+                
+                e.target.closest('.comment').appendChild(replyContainer);
+                replyInput.focus();
+            }
+        });
+        
+        // Back button functionality
+        const backBtn = document.querySelector('.back-btn');
+        backBtn.addEventListener('click', function() {
+            window.location.href = 'clase4.html'; // Cambiar por la URL correcta
+        });
+        
+        // Translate button functionality
+        const translateBtn = document.querySelector('.translate-btn');
+        translateBtn.addEventListener('click', function() {
+            // Implementar funcionalidad de traducción aquí
+            console.log('Funcionalidad de traducción');
+        });
+        
+        // Report button functionality
+        const reportBtn = document.querySelector('.report-btn');
+        reportBtn.addEventListener('click', function() {
+            // Implementar funcionalidad de reporte aquí
+            console.log('Funcionalidad de reporte');
+        });
+        
+        // Survey button functionality
+        const surveyBtn = document.querySelector('.progress-btn:first-child');
+        surveyBtn.addEventListener('click', function() {
+            window.open('encuesta.html', '_blank'); // Cambiar por la URL correcta
+        });
+        
+        // Exam button functionality
+        const examBtn = document.querySelector('.progress-btn:last-child');
+        examBtn.addEventListener('click', function() {
+            window.open('tomar_examen.html', '_blank'); // Cambiar por la URL correcta
+        });
+    });
+</script>
 </body>
 </html>
