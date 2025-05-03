@@ -52,9 +52,84 @@
             {% include 'usAdmin/baseAside.html' %}
 
             <main class="flex-1 p-6 text-white">
-                <div class="page-inner">
-                    <h2>Reportes </h2>
+                
+            <div class="max-w-5xl mx-auto py-12 px-6">
+                <div class="bg-white p-8 rounded-2xl shadow-xl">
+                <h1 class="text-3xl font-bold text-gray-800 mb-6">📊 Generador de Reportes Administrativos</h1>
+
+                <form method="GET" action="/generar-reporte/">
+                    <!-- Tipo de Reporte -->
+                    <div class="mb-6">
+                    <label class="block text-gray-700 font-semibold mb-2">Tipo de Reporte</label>
+                    <select name="tipo_reporte" class="w-full p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-black">
+                        <option value="inscripciones">📋 Alumnos Inscritos</option>
+                        <option value="cursos">🎓 Cursos Activos</option>
+                        <option value="pagos">💰 Pagos Realizados</option>
+                        <option value="progreso">📊 Progreso de Usuarios</option>
+                        <option value="foros">🧾 Participación en Foros</option>
+                        <option value="calificaciones">📈 Calificaciones</option>
+                    </select>
+                    </div>
+
+                    <!-- Formato de Exportación -->
+                    <div class="mb-6">
+                    <label class="block text-gray-700 font-semibold mb-2">Formato de Exportación</label>
+                    <div class="flex items-center gap-4">
+                        <label class="flex items-center gap-2">
+                        <input type="radio" name="formato" value="pdf" checked>
+                        <span>PDF</span>
+                        </label>
+                        <label class="flex items-center gap-2">
+                        <input type="radio" name="formato" value="excel">
+                        <span>Excel</span>
+                        </label>
+                    </div>
+                    </div>
+
+                    <!-- Filtro por Curso -->
+                    <div class="mb-6">
+                    <label class="block text-gray-700 font-semibold mb-2">Filtrar por Curso</label>
+                    <select name="curso" class="w-full p-3 border rounded-xl text-black">
+                        <option value="todos">✔️ Todos los cursos</option>
+                        {% for curso in cursos %}
+                            <option value="curso1">Curso: {{ curso }}</option>                            
+                        {% endfor %}
+                        <!-- Esto debe ser dinámico desde la vista -->
+                    </select>
+                    </div>
+
+                    <!-- Filtro por Fecha -->
+                    <div class="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Desde</label>
+                        <input type="date" name="fecha_desde" class="w-full p-3 border rounded-xl text-black">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Hasta</label>
+                        <input type="date" name="fecha_hasta" class="w-full p-3 border rounded-xl text-black">
+                    </div>
+                    </div>
+
+                    <!-- Filtro por Estado -->
+                    <div class="mb-6">
+                    <label class="block text-gray-700 font-semibold mb-2">Estado (si aplica)</label>
+                    <select name="estado" class="w-full p-3 border rounded-xl text-black">
+                        <option value="todos">Todos</option>
+                        <option value="completado">Completado</option>
+                        <option value="pendiente">Pendiente</option>
+                        <option value="fallido">Fallido</option>
+                        <option value="en_progreso">En Progreso</option>
+                    </select>
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="flex justify-end gap-4">
+                    <button type="reset" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold px-5 py-2 rounded-xl">Limpiar Filtros</button>
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2 rounded-xl shadow">Generar Reporte</button>
+                    </div>
+                </form>
                 </div>
+            </div>
             </main>
 
         </div>

@@ -61,33 +61,47 @@
         {% include 'usAdmin/baseAside.html' %}
         <main class="flex-1 p-6 text-white">
             <div class="max-w-6xl mx-auto py-8 px-6">
-                <h1 class="text-3xl font-bold mb-8">📚 Todos los Cursos</h1>
-        
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {% for curso in cursos %}
-                        <a href="{% url 'detalle_curso' curso.id %}" class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition overflow-hidden text-black">
-                            <div class="relative h-48 bg-gray-200">
-                                {% if curso.primer_video %}
-                                    <video class="w-full h-full object-cover" muted preload="metadata">
-                                        <source src="{{ curso.primer_video.url_contenido }}" type="video/mp4">
-                                        Tu navegador no soporta video.
-                                    </video>
-                                {% else %}
-                                    <img src="https://via.placeholder.com/640x360?text=Curso+Sin+Video" alt="Sin video" class="w-full h-full object-cover">
-                                {% endif %}
-                            </div>
-                            <div class="p-4">
-                                <h2 class="font-bold text-xl mb-1">{{ curso.titulo }}</h2>
-                                <p class="text-sm text-gray-700 mb-2">{{ curso.descripcion|truncatewords:15 }}</p>
-                                <p class="text-xs text-gray-500">Publicado: {{ curso.fecha_publicacion|date:"d M Y H:i" }}</p>
-                            </div>
-                        </a>
-                    {% empty %}
-                        <p class="text-gray-400 italic">No hay cursos registrados aún.</p>
-                    {% endfor %}
-                </div>
+              <h1 class="text-3xl font-bold mb-8">📚 Todos los Cursos</h1>
+          
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for curso in cursos %}
+                  <div class="relative group">
+                    <!-- Enlace al detalle del curso -->
+                    <a href="{% url 'detalle_curso' curso.id %}" class="block bg-white rounded-2xl shadow-lg hover:shadow-2xl transition overflow-hidden text-black">
+                      <div class="relative h-48 bg-gray-200">
+                        {% if curso.primer_video %}
+                          <video class="w-full h-full object-cover" muted preload="metadata">
+                            <source src="{{ curso.primer_video.url_contenido }}" type="video/mp4">
+                          </video>
+                        {% else %}
+                          <img src="https://via.placeholder.com/640x360?text=Curso+Sin+Video" alt="Sin video" class="w-full h-full object-cover">
+                        {% endif %}
+                      </div>
+                      <div class="p-4">
+                        <h2 class="font-bold text-xl mb-1">{{ curso.titulo }}</h2>
+                        <p class="text-sm text-gray-700 mb-2">{{ curso.descripcion|truncatewords:15 }}</p>
+                        <p class="text-xs text-gray-500">Publicado: {{ curso.fecha_publicacion|date:"d M Y H:i" }}</p>
+                      </div>
+                    </a>
+          
+                    <!-- Botón eliminar -->
+                    {% if request.user.rol.nombre == 'Administrador' %}
+                    <form method="post" action="{% url 'eliminar_curso' curso.id %}" class="absolute top-2 right-2 z-10">
+                        {% csrf_token %}
+                        <button type="submit" onclick="return confirm('¿Estás seguro de eliminar este curso?')" class="bg-red-600 hover:bg-red-700 text-white px-2 py-1 text-xs rounded-full shadow">
+                        🗑️
+                        </button>
+                    </form>
+                    {% endif %}
+
+                  </div>
+                {% empty %}
+                  <p class="text-gray-400 italic">No hay cursos registrados aún.</p>
+                {% endfor %}
+              </div>
             </div>
-        </main>               
+          </main>
+                       
     </div>
 </body>
 </html>

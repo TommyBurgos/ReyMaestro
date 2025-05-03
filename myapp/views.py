@@ -1,6 +1,6 @@
 from django.shortcuts import render, HttpResponse, get_object_or_404, redirect
 from django.contrib.auth import login, logout, authenticate
-from user.models import User, Rol, TipoUsuario, Curso, Contenido, Modulo, Leccion
+from user.models import User, Rol, TipoUsuario, Curso, Contenido, Modulo, Leccion, Inscripcion, Curso, Pago, User, ProgresoUsuario, Foro, ComentarioForo, Calificacion
 from django.db.models import Q
 from django.middleware.csrf import rotate_token
 from django.contrib.auth.decorators import login_required
@@ -12,6 +12,14 @@ from django.core.files.storage import default_storage
 import re
 import requests
 import uuid
+#LIBRERIAS PARA GENERACIÓN DE REPORTES
+import pandas as pd
+from reportlab.pdfgen import canvas
+from django.utils.timezone import make_aware
+from datetime import datetime
+
+
+
 
 from .permissions import role_required
 from django.core.paginator import Paginator
@@ -30,6 +38,7 @@ def inicio(request):
 @role_required('Administrador')
 def inicioAdmin(request):
     user = request.user
+    cursos = Curso.objects.all().order_by('-fecha_creacion')
     imgPerfil=user.imgPerfil
     # 1. Cantidad de usuarios cuyo rol es igual a 2
     cantidad_usuarios_docentes = User.objects.filter(rol__id=2).count()
@@ -37,7 +46,8 @@ def inicioAdmin(request):
     context = {
         'cantidad_usuarios_docentes': cantidad_usuarios_docentes, 
         'cantidad_usuarios_alumnos':cantidad_usuarios_alumnos,               
-        'imgPerfil': imgPerfil,        
+        'imgPerfil': imgPerfil,
+        'cursos':cursos,        
         'usuario':user.username,        
     }    
     return render(request, 'usAdmin/index.html', context)
@@ -185,6 +195,19 @@ def crear_curso(request):
         form = CursoForm()
     print("Llegue al final de la función")
     return render(request, 'usAdmin/crear_curso.html', {'form': form})
+
+@role_required('Administrador')
+@login_required
+def eliminar_curso(request, curso_id):
+    curso = get_object_or_404(Curso, id=curso_id)
+
+    if request.method == 'POST':
+        curso.delete()
+        messages.success(request, f"Curso '{curso.titulo}' eliminado correctamente.")
+        return redirect('listado_cursos')  # o donde estés listando los cursos
+
+    return render(request, 'usAdmin/confirmar_eliminacion.html', {'curso': curso})
+
 
 from django.db.models import Prefetch
 
@@ -341,11 +364,186 @@ def detallePagos(request):
 def detalleReportes(request):
     user = request.user
     imgPerfil=user.imgPerfil
+    cursos = Curso.objects.all().order_by('-fecha_creacion')
     context = {                     
         'imgPerfil': imgPerfil,        
-        'usuario':user.username,        
+        'usuario':user.username,
+        'cursos': cursos      
     }
     return render(request, 'usAdmin/detalleReportes.html', context)
+
+#FUNCIONES PARA GENERAR REPORTES
+def preparar_reporte_inscripciones(filtros):
+    inscripciones = Inscripcion.objects.filter(**filtros).select_related('usuario', 'curso')
+    datos = []
+    for inscripcion in inscripciones:
+        datos.append({
+            'Usuario': inscripcion.usuario.username,
+            'Curso': inscripcion.curso.titulo,
+            'Fecha de inscripción': inscripcion.fecha_inscripcion.strftime("%d/%m/%Y"),
+            'Estado': inscripcion.estado,
+            'Progreso': f"{inscripcion.progreso}%",
+        })
+    return datos
+
+def preparar_reporte_cursos():
+    cursos = Curso.objects.all()
+    datos = []
+    for curso in cursos:
+        datos.append({
+            'Título': curso.titulo,
+            'Profesor': curso.profesor.username,
+            'Fecha de creación': curso.fecha_creacion.strftime("%d/%m/%Y"),
+            'Estado': curso.estado,
+            'Nivel': curso.nivel_dificultad,
+        })
+    return datos
+
+def preparar_reporte_pagos(filtros):
+    pagos = Pago.objects.filter(**filtros).select_related('usuario')
+    datos = []
+    for pago in pagos:
+        datos.append({
+            'Usuario': pago.usuario.username,
+            'Monto': f"${pago.monto}",
+            'Método': pago.metodo_pago,
+            'Estado de pago': pago.estado_pago,
+            'Fecha de pago': pago.fecha_pago.strftime("%d/%m/%Y"),
+        })
+    return datos
+
+def preparar_reporte_progreso(filtros):
+    progresos = ProgresoUsuario.objects.filter(**filtros).select_related('usuario', 'contenido')
+    datos = []
+    for progreso in progresos:
+        datos.append({
+            'Usuario': progreso.usuario.username,
+            'Contenido': progreso.contenido.titulo,
+            'Completado': 'Sí' if progreso.completado else 'No',
+            'Fecha Actualización': progreso.fecha_actualizacion.strftime("%d/%m/%Y"),
+        })
+    return datos
+
+def preparar_reporte_foros(filtros):
+    foros = Foro.objects.all()
+    datos = []
+    for foro in foros:
+        comentarios = ComentarioForo.objects.filter(foro=foro).count()
+        datos.append({
+            'Curso': foro.curso.titulo,
+            'Título del Foro': foro.titulo,
+            'Cantidad de Comentarios': comentarios,
+            'Fecha de creación': foro.fecha_creacion.strftime("%d/%m/%Y"),
+        })
+    return datos
+
+def preparar_reporte_calificaciones(filtros):
+    calificaciones = Calificacion.objects.select_related('inscripcion', 'contenido')
+    datos = []
+    for calificacion in calificaciones:
+        datos.append({
+            'Usuario': calificacion.inscripcion.usuario.username,
+            'Curso': calificacion.inscripcion.curso.titulo,
+            'Contenido': calificacion.contenido.titulo,
+            'Calificación': calificacion.calificacion,
+            'Fecha de Calificación': calificacion.fecha_calificacion.strftime("%d/%m/%Y"),
+        })
+    return datos
+
+##GENERACIÓN DEL PDF
+def generar_pdf(datos, nombre_archivo):
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename=\"{nombre_archivo}.pdf\"'
+    p = canvas.Canvas(response)
+
+    p.setFont("Helvetica-Bold", 14)
+    p.drawString(50, 800, f"Reporte: {nombre_archivo.replace('_', ' ').title()}")
+    y = 770
+
+    for registro in datos:
+        p.setFont("Helvetica", 10)
+        for clave, valor in registro.items():
+            p.drawString(50, y, f"{clave}: {valor}")
+            y -= 15
+            if y <= 50:
+                p.showPage()
+                y = 800
+        y -= 10
+
+    p.showPage()
+    p.save()
+    return response
+
+def generar_excel(datos, nombre_archivo):
+    df = pd.DataFrame(datos)
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = f'attachment; filename=\"{nombre_archivo}.xlsx\"'
+    df.to_excel(response, index=False, engine='openpyxl')
+    return response
+
+
+
+
+def generar_reporte(request):
+    if request.method == 'GET':
+        tipo_reporte = request.GET.get('tipo_reporte')
+        formato = request.GET.get('formato')
+        curso_id = request.GET.get('curso')
+        fecha_desde = request.GET.get('fecha_desde')
+        fecha_hasta = request.GET.get('fecha_hasta')
+        estado = request.GET.get('estado')
+
+        tipo_reporte = request.GET.get('tipo_reporte')
+        formato = request.GET.get('formato')
+        if not tipo_reporte or not formato:
+            return HttpResponse("Por favor selecciona tipo de reporte y formato.", status=400)
+
+        # Procesar los filtros
+        filtros = {}
+        if curso_id and curso_id != 'todos':
+            filtros['curso_id'] = curso_id
+
+        if fecha_desde:
+            filtros['fecha_inscripcion__gte'] = make_aware(datetime.strptime(fecha_desde, "%Y-%m-%d"))
+        if fecha_hasta:
+            filtros['fecha_inscripcion__lte'] = make_aware(datetime.strptime(fecha_hasta, "%Y-%m-%d"))
+
+        if estado and estado != 'todos':
+            filtros['estado'] = estado
+
+        # Preparar datos según tipo de reporte
+        if tipo_reporte == 'inscripciones':
+            datos = preparar_reporte_inscripciones(filtros)
+            nombre_archivo = 'reporte_inscripciones'
+        elif tipo_reporte == 'cursos':
+            datos = preparar_reporte_cursos()
+            nombre_archivo = 'reporte_cursos'
+        elif tipo_reporte == 'pagos':
+            datos = preparar_reporte_pagos(filtros)
+            nombre_archivo = 'reporte_pagos'
+        elif tipo_reporte == 'progreso':
+            datos = preparar_reporte_progreso(filtros)
+            nombre_archivo = 'reporte_progreso'
+        elif tipo_reporte == 'foros':
+            datos = preparar_reporte_foros(filtros)
+            nombre_archivo = 'reporte_foros'
+        elif tipo_reporte == 'calificaciones':
+            datos = preparar_reporte_calificaciones(filtros)
+            nombre_archivo = 'reporte_calificaciones'
+        else:
+            return HttpResponse("Tipo de reporte no válido.", status=400)
+
+        # Generar PDF o Excel según formato elegido
+        if formato == 'pdf':
+            return generar_pdf(datos, nombre_archivo)
+        elif formato == 'excel':
+            return generar_excel(datos, nombre_archivo)
+        else:
+            return HttpResponse("Formato no válido.", status=400)            
+
+
+    return redirect('nombre_de_tu_vista_formulario_reportes')  # Cambiar por la vista del formulario
+
 
 @role_required('Administrador')
 def configuracionAdmin(request):
