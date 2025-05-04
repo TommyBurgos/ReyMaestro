@@ -541,7 +541,6 @@ def generar_reporte(request):
         else:
             return HttpResponse("Formato no válido.", status=400)            
 
-
     return redirect('nombre_de_tu_vista_formulario_reportes')  # Cambiar por la vista del formulario
 
 
