@@ -755,6 +755,14 @@ def tableroEstudiante(request):
 def crearRutaEstudiante(request):
     return render(request, 'usEstudiante/crearRuta.html')
 
+@role_required('Estudiante')
+def verPerfilEstudiante(request):
+    return render(request, 'usEstudiante/verPerfil.html')
+
+@role_required('Estudiante')
+def editarPerfilEstudiante(request):
+    return render(request, 'usEstudiante/editarPerfil.html')
+
 def inicioDocente(request):
     return render(request, 'docente/index.html')
 

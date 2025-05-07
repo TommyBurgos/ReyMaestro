@@ -793,16 +793,12 @@
     <!-- Sidebar -->
     <div class="sidebar">
         <img src="/static/img/logoReyMaestro3.png" alt="Logo Rey Maestro" class="logo">
-        <a href="#" class="nav-link active" title="Inicio"><i class="fas fa-home"></i></a>
-        <a href="#" class="nav-link" title="Mis rutas"><i class="fas fa-route"></i></a>
-        <a href="#" class="nav-link" title="Mi progreso"><i class="fas fa-chart-line"></i></a>
-        <a href="#" class="nav-link" title="Mi tablero"><i class="fas fa-chess-board"></i></a>
-        <a href="#" class="nav-link" title="Chat ADA"><i class="fas fa-robot"></i></a>
-        <a href="#" class="nav-link" title="Notificaciones"><i class="fas fa-bell"></i></a>
-        <div class="sidebar-promo">
-            <a class="nav-link text-info">¡Grandes maestros empezaron aquí!</a>
-            <a class="nav-link text-light" href="#">Conoce más →</a>
-        </div>
+        <a href="{% url 'student_dashboard' %}" class="nav-link active" title="Inicio"><i class="fas fa-home"></i></a>
+        <a href="rutas" class="nav-link" title="Mis rutas"><i class="fas fa-route"></i></a>
+        <a href="progreso" class="nav-link" title="Mi progreso"><i class="fas fa-chart-line"></i></a>
+        <a href="tablero" class="nav-link" title="Mi tablero"><i class="fas fa-chess-board"></i></a>
+        <a href="chat" class="nav-link" title="Chat ADA"><i class="fas fa-robot"></i></a>
+        <a href="notificaciones" class="nav-link" title="Notificaciones"><i class="fas fa-bell"></i></a>
     </div>
 
     <!-- Main Content -->
