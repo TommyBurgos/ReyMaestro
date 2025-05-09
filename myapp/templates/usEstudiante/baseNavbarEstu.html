@@ -1,32 +1,111 @@
-<!-- navBar.html -->
 <div class="topbar">
+  <div class="search-container">
     <input type="text" class="search-input" placeholder="¿Qué quieres aprender?">
-    <div class="user-info">
-      <div class="badge-streak" id="streak-btn">
-        🚀 <span class="text-success">9 semanas</span>
-        <div class="streak-popup" id="streak-popup">
-          <strong>Racha semanal</strong>
-          <p>¡Llevas <strong>9 semanas</strong> en racha! Regresa la próxima semana para mantenerla.</p>
-          <div class="progress-checks">
-            <div class="check-circle">✔</div>
-            <div class="check-circle">✔</div>
-            <div class="check-circle">✔</div>
-            <div class="empty-circle">○</div>
-          </div>
-          <div class="text-center text-muted mt-2">Semana: 7 8 9 10</div>
-        </div>
-      </div>
-      <div class="profile-circle" id="profile-btn">ES
-        <div class="profile-popup" id="profile-popup">
-          <p class="mb-1">Hola Hector Ismael</p>
-          <small class="text-muted">Tienes 239 días de tu plan</small>
-          <hr>
-          <a href="#" class="d-block mb-1">Ver mi perfil</a>
-          <a href="#" class="d-block mb-1">Obtén 1 mes gratis</a>
-          <a href="#" class="d-block mb-1">Mi suscripción</a>
-          <a href="#" class="d-block mb-2">Contáctanos</a>
-          <a href="#" class="text-danger">Cerrar sesión</a>
+  </div>
+  <div class="user-info">
+    <div class="badge-streak" id="streak-btn">
+      <span class="rocket">🚀</span>
+      <span class="streak-count">9 semanas</span>
+      <div class="streak-popup" id="streak-popup">
+        <h3>Racha semanal</h3>
+        <p class="streak-message">¡Llevas <strong>9 semanas</strong> en racha! Regresa la próxima semana para mantenerla.</p>
+        <div class="progress-checks">
+          <div class="check-circle filled">7</div>
+          <div class="check-circle filled">8</div>
+          <div class="check-circle filled">9</div>
+          <div class="check-circle">10</div>
         </div>
       </div>
     </div>
+    <div class="profile-circle" id="profile-btn">HI
+      <div class="profile-popup" id="profile-popup">
+        <div class="profile-header">
+          <h4>Hola Hector Ismael</h4>
+          <p class="plan-days">Tienes 239 días de tu plan</p>
+        </div>
+        <div class="profile-links">
+          <a href="verPerfil" class="profile-link">Ver mi perfil</a>
+          <a href="#" class="profile-link highlight">Obtén 1 mes gratis</a>
+          <a href="#" class="profile-link">Mi suscripción</a>
+          <a href="#" class="profile-link">Contáctanos</a>
+          <a href="/logout/" class="profile-link logout">Cerrar sesión</a>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const streakBtn = document.getElementById('streak-btn');
+  const profileBtn = document.getElementById('profile-btn');
+  const streakPopup = document.getElementById('streak-popup');
+  const profilePopup = document.getElementById('profile-popup');
+  
+  const navbar = document.querySelector('.topbar');
+  if (window.scrollY > 10) {
+    navbar.style.background = '#0f172a';
+    navbar.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+  } else {
+    navbar.style.background = '#0f172a';
+    navbar.style.boxShadow = 'none';
+  }
+
+  // Mostrar/ocultar popups al hacer hover
+  streakBtn.addEventListener('mouseenter', function() {
+    streakPopup.style.display = 'block';
+    profilePopup.style.display = 'none';
+  });
+  
+  streakBtn.addEventListener('mouseleave', function() {
+    setTimeout(() => {
+      if (!streakPopup.matches(':hover')) {
+        streakPopup.style.display = 'none';
+      }
+    }, 200);
+  });
+  
+  streakPopup.addEventListener('mouseleave', function() {
+    streakPopup.style.display = 'none';
+  });
+  
+  profileBtn.addEventListener('mouseenter', function() {
+    profilePopup.style.display = 'block';
+    streakPopup.style.display = 'none';
+  });
+  
+  profileBtn.addEventListener('mouseleave', function() {
+    setTimeout(() => {
+      if (!profilePopup.matches(':hover')) {
+        profilePopup.style.display = 'none';
+      }
+    }, 200);
+  });
+  
+  profilePopup.addEventListener('mouseleave', function() {
+    profilePopup.style.display = 'none';
+  });
+  
+  // Para dispositivos táctiles (opcional)
+  streakBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    streakPopup.style.display = streakPopup.style.display === 'block' ? 'none' : 'block';
+    profilePopup.style.display = 'none';
+  });
+  
+  profileBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    profilePopup.style.display = profilePopup.style.display === 'block' ? 'none' : 'block';
+    streakPopup.style.display = 'none';
+  });
+  
+  document.addEventListener('click', function(e) {
+    if (!streakBtn.contains(e.target) && !streakPopup.contains(e.target)) {
+      streakPopup.style.display = 'none';
+    }
+    if (!profileBtn.contains(e.target) && !profilePopup.contains(e.target)) {
+      profilePopup.style.display = 'none';
+    }
+  });
+});
+</script>
