@@ -39,7 +39,8 @@
         <!-- CSS Just for demo purpose, don't include it in your project -->
         <link rel="stylesheet" href="{% static 'css/demo.css' %}" />
         <!--CAMBIOS PROPIOS DE ESTILO-->
-        <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+        <link rel="stylesheet" href="{% static 'css/style.css' %}" />        
+        <link rel="stylesheet" href="{% static 'css/estiloSoporte.css' %}">
     </head>
     <body class="bg-gradient-to-b from-gray-900 to-gray-700 min-h-screen flex flex-col">
     
@@ -53,12 +54,96 @@
 
             <main class="flex-1 p-6 text-white">
                 <div class="page-inner">
-                    <h2>Soporte</h2>
+                
+                <!-- Contenedor del chatbot -->
+                <section class="bg-white rounded-xl shadow-xl p-4 mx-auto text-black h-[90vh] w[90vw]max-w-5xl flex flex-col">
+                    <div class="chat-header font-bold text-xl mb-2 border-b pb-2">💬 Chat con Rey Maestro</div>
                     
+                    <div id="chat-messages" class="flex-1 overflow-y-auto space-y-2 p-2 border rounded bg-gray-100">
+
+                      <!-- Mensajes aparecerán aquí -->
+                    </div>
+                
+                    <div class="chat-input mt-4 flex">
+                      <input
+                        type="text"
+                        id="user-input"
+                        class="flex-1 border p-2 rounded-l-lg focus:outline-none"
+                        placeholder="Escribe un mensaje..."
+                        onkeypress="handleKeyPress(event)"
+                      />
+                      <button
+                        onclick="sendMessage()"
+                        class="bg-blue-600 text-white px-4 rounded-r-lg hover:bg-blue-700"
+                      >
+                        Enviar
+                      </button>
+                    </div>
+                  </section>
+                <!-- Botón flotante de WhatsApp -->
+                 <br>
+                <p id="textoWhatsApp">Necesitas ayuda más personalizada??
+                    Contacta a soporte directamente</p>
+                   <a id="botonWhatsApp" href="https://wa.me/+593968561304?text=Hola,+me+gustaría+obtener+informacion+sobre+los+cursos" class="whatsapp-button" target="_blank">
+                       <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/WhatsApp_icon.png" alt="WhatsApp">
+                   </a>
+
+                <!-- Script del chatbot -->                                                    
                 </div>
             </main>
 
         </div>
+
+        <!--SCRIPT PARA QUE FUNCIONE EL ENTER-->
+        <script>
+            function handleKeyPress(event) {
+              if (event.key === "Enter") {
+                event.preventDefault();
+                sendMessage();
+              }
+            }
+          
+            function sendMessage() {
+              const userInput = document.getElementById("user-input");
+              const message = userInput.value.trim();
+              if (!message) return;
+          
+              const chatMessages = document.getElementById("chat-messages");
+          
+              // 🟦 Mensaje del usuario alineado a la derecha
+              const userMsg = document.createElement("div");
+              userMsg.className = "flex justify-end";
+              userMsg.innerHTML = `
+                <div class="bg-blue-600 text-white px-4 py-2 rounded-xl max-w-xs text-right">
+                  ${message}
+                </div>`;
+              chatMessages.appendChild(userMsg);
+          
+              fetch("/api/chatbot/", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message }),
+              })
+                .then(response => response.json())
+                .then(data => {
+                  const botReply = document.createElement("div");
+                  botReply.className = "flex justify-start";
+                  botReply.innerHTML = `
+                    <div class="bg-gray-300 text-black px-4 py-2 rounded-xl max-w-xs">
+                      ${data.reply}
+                    </div>`;
+                  chatMessages.appendChild(botReply);
+                  chatMessages.scrollTop = chatMessages.scrollHeight;
+                })
+                .catch(error => console.error("Error:", error));
+          
+              userInput.value = "";
+            }
+          </script>
+          
+          
+
+
         <script>
           const menuToggle = document.getElementById('menu-toggle');
           const sidebar = document.getElementById('sidebar');
