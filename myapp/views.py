@@ -741,6 +741,61 @@ def cambiar_password(request):
     return redirect('editarPerfil-adm')
 
 
+#PARA ENVIO DE MENSAJES
+from user.models import Mensaje
+from .forms import MensajeForm
+
+@login_required
+def bandeja_entrada(request):
+    mensajes = Mensaje.objects.filter(destinatario=request.user).order_by('-fecha_envio')
+    return render(request, 'mensajes/mensajeria.html', {'mensajes': mensajes})
+
+@login_required
+def enviar_mensaje(request):
+    if request.method == 'POST':
+        form = MensajeForm(request.POST)
+        if form.is_valid():
+            mensaje = form.save(commit=False)
+            mensaje.remitente = request.user
+            mensaje.save()
+            return redirect('bandeja_entrada')
+    else:
+        form = MensajeForm()
+    return render(request, 'mensajes/enviar_mensaje.html', {'form': form})
+
+@login_required
+def detalle_mensaje(request, mensaje_id):
+    mensaje = get_object_or_404(Mensaje, id=mensaje_id)
+
+    # Solo destinatario o remitente pueden ver
+    if request.user != mensaje.destinatario and request.user != mensaje.remitente:
+        return redirect('bandeja_entrada')
+
+    # Marcar como leído
+    if not mensaje.leido and request.user == mensaje.destinatario:
+        mensaje.leido = True
+        mensaje.save()
+
+    # Manejar respuesta
+    if request.method == 'POST':
+        contenido_respuesta = request.POST.get('respuesta')
+        if contenido_respuesta:
+            Mensaje.objects.create(
+                remitente=request.user,
+                destinatario=mensaje.remitente,
+                asunto=f"RE: {mensaje.asunto}",
+                contenido=contenido_respuesta
+            )
+            return redirect('bandeja_entrada')
+
+    return render(request, 'mensajes/detalle_mensaje.html', {'mensaje': mensaje})
+
+@login_required
+def mensajes_enviados(request):
+    mensajes = Mensaje.objects.filter(remitente=request.user).order_by('-fecha_envio')
+    return render(request, 'mensajes/mensajes_enviados.html', {'mensajes': mensajes})
+
+
 
 def registroUser(request):
     return render(request, 'inicio/registro.html')

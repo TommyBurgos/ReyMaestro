@@ -42,6 +42,10 @@ urlpatterns = [
     path('ajedrez/enviar-movimiento/', views.enviar_movimiento, name='enviar_movimiento'),
     path('ajedrez/estado-partida/<str:game_id>/', views.obtener_estado_partida, name='estado_partida'),
 
+    path('mensajes/', views.bandeja_entrada, name='bandeja_entrada'),
+    path('mensajes/enviar/', views.enviar_mensaje, name='enviar_mensaje'),
+    path('mensajes/enviados/', views.mensajes_enviados, name='mensajes_enviados'),
+    path('mensajes/<int:mensaje_id>/', views.detalle_mensaje, name='detalle_mensaje'),
 
 
 
