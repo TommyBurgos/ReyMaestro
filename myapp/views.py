@@ -761,7 +761,7 @@ def verPerfilEstudiante(request):
 
 @role_required('Estudiante')
 def editarPerfilEstudiante(request):
-    return render(request, 'usEstudiante/editarPerfil.html')
+    return render(request, 'usEstudiante/editarPerfilEstu.html')
 
 def inicioDocente(request):
     return render(request, 'docente/index.html')
