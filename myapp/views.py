@@ -17,6 +17,7 @@ import pandas as pd
 from reportlab.pdfgen import canvas
 from django.utils.timezone import make_aware
 from datetime import datetime
+from datetime import timedelta
 
 
 
@@ -38,14 +39,25 @@ def inicio(request):
 @role_required('Administrador')
 def inicioAdmin(request):
     user = request.user
-    cursos = Curso.objects.all().order_by('-fecha_creacion')
-    imgPerfil=user.imgPerfil
+    
+    
+    imgPerfil=user.imgPerfil    
     # 1. Cantidad de usuarios cuyo rol es igual a 2
+    # Fecha hace dos semanas
+    dos_semanas_atras = timezone.now() - timedelta(weeks=4)
+    #Ultimos cursos creados
+    cursos = Curso.objects.all().order_by('-fecha_creacion').filter(fecha_creacion__gte=dos_semanas_atras)
+    # Usuarios creados en las últimas dos semanas
+    usuarios_recientes = User.objects.filter(date_joined__gte=dos_semanas_atras)
+
     cantidad_usuarios_docentes = User.objects.filter(rol__id=2).count()
     cantidad_usuarios_alumnos = User.objects.filter(rol__id=3).count()
+    print(f"Estos son los nuevos usuarios: {usuarios_recientes}")
+    print(user.rol_id)    
     context = {
         'cantidad_usuarios_docentes': cantidad_usuarios_docentes, 
-        'cantidad_usuarios_alumnos':cantidad_usuarios_alumnos,               
+        'cantidad_usuarios_alumnos':cantidad_usuarios_alumnos,
+        'usuarios_recientes': usuarios_recientes,               
         'imgPerfil': imgPerfil,
         'cursos':cursos,        
         'usuario':user.username,        
@@ -129,6 +141,7 @@ def detalleCursos(request):
     }
     return render(request, 'usAdmin/detalleCursos.html', context)
 
+from .storages_backends import S3VideoStorage
 
 @role_required('Administrador')
 @login_required
@@ -174,7 +187,9 @@ def crear_curso(request):
             # Subir video a S3
             ext = video_file.name.split('.')[-1]
             video_nombre = f"videos/{uuid.uuid4()}.{ext}"  # Nombre único
-            video_path = default_storage.save(video_nombre, video_file)
+            s3_storage = S3VideoStorage()
+            video_path = s3_storage.save(video_nombre, video_file)
+            #video_path = default_storage.save(video_nombre, video_file)
             print("Antes de general la URL")
             # Generar URL pública
             video_url = f"https://{settings.AWS_STORAGE_BUCKET_NAME}.s3.{settings.AWS_S3_REGION_NAME}.amazonaws.com/{video_path}"
@@ -243,6 +258,8 @@ def ver_leccion(request, leccion_id):
 
 from django.utils import timezone
 
+from .storages_backends import S3VideoStorage
+
 @role_required('Administrador')
 @login_required
 def agregar_contenido(request, curso_id):
@@ -254,18 +271,28 @@ def agregar_contenido(request, curso_id):
         tipo = request.POST.get('tipo')
         archivo = request.FILES.get('archivo')
         texto = request.POST.get('texto', '')
-        
+
         if not titulo or not tipo:
             messages.error(request, "Título y tipo de contenido son obligatorios.")
             return redirect('agregar_contenido', curso_id=curso.id)
 
-        # Subir archivo si corresponde
         url_contenido = None
+        archivo_guardado = None
+
         if tipo in ['video', 'documento'] and archivo:
             ext = archivo.name.split('.')[-1]
             nombre_unico = f"{tipo}s/{uuid.uuid4()}.{ext}"
-            path = default_storage.save(nombre_unico, archivo)
-            url_contenido = f"https://{settings.AWS_STORAGE_BUCKET_NAME}.s3.{settings.AWS_S3_REGION_NAME}.amazonaws.com/{path}"
+
+            # 🔐 Usar almacenamiento personalizado en S3 solo para videos y documentos
+            s3_storage = S3VideoStorage()
+            ruta_archivo = s3_storage.save(nombre_unico, archivo)
+            url_contenido = s3_storage.url(ruta_archivo)
+
+            # Solo guarda archivo físicamente si es documento
+            if tipo == 'documento':
+                archivo_guardado = None  # Puedes dejarlo como None si solo usas la URL
+            else:
+                archivo_guardado = None
 
         Contenido.objects.create(
             curso=curso,
@@ -273,7 +300,7 @@ def agregar_contenido(request, curso_id):
             tipo_contenido=tipo,
             url_contenido=url_contenido if tipo != 'texto' else None,
             descripcion=descripcion,
-            archivo=archivo if tipo == 'documento' else None,
+            archivo=archivo_guardado,
             fecha_subida=timezone.now()
         )
 
@@ -325,13 +352,15 @@ def crear_leccion(request, modulo_id):
             messages.error(request, "Título y tipo de contenido son obligatorios.")
             return redirect('crear_leccion', modulo_id=modulo.id)
 
-        # Subida a S3
         url_contenido = None
+        archivo_guardado = None
+
         if tipo in ['video', 'documento'] and archivo:
             ext = archivo.name.split('.')[-1]
             nombre_archivo = f"{tipo}s/{uuid.uuid4()}.{ext}"
-            ruta = default_storage.save(nombre_archivo, archivo)
-            url_contenido = f"https://{settings.AWS_STORAGE_BUCKET_NAME}.s3.{settings.AWS_S3_REGION_NAME}.amazonaws.com/{ruta}"
+            s3_storage = S3VideoStorage()
+            ruta = s3_storage.save(nombre_archivo, archivo)
+            url_contenido = s3_storage.url(ruta)
 
         nueva_leccion = Leccion.objects.create(
             modulo=modulo,
@@ -339,8 +368,8 @@ def crear_leccion(request, modulo_id):
             tipo_contenido=tipo,
             descripcion=descripcion,
             url_contenido=url_contenido,
-            archivo=archivo if tipo == 'documento' else None,
-            imagen=imagen,
+            archivo=None,  # Puedes dejar como None si ya guardas solo URL
+            imagen=imagen,  # Esto se guarda local en MEDIA_ROOT
             orden=orden
         )
 
@@ -712,6 +741,61 @@ def cambiar_password(request):
     return redirect('editarPerfil-adm')
 
 
+#PARA ENVIO DE MENSAJES
+from user.models import Mensaje
+from .forms import MensajeForm
+
+@login_required
+def bandeja_entrada(request):
+    mensajes = Mensaje.objects.filter(destinatario=request.user).order_by('-fecha_envio')
+    return render(request, 'mensajes/mensajeria.html', {'mensajes': mensajes})
+
+@login_required
+def enviar_mensaje(request):
+    if request.method == 'POST':
+        form = MensajeForm(request.POST)
+        if form.is_valid():
+            mensaje = form.save(commit=False)
+            mensaje.remitente = request.user
+            mensaje.save()
+            return redirect('bandeja_entrada')
+    else:
+        form = MensajeForm()
+    return render(request, 'mensajes/enviar_mensaje.html', {'form': form})
+
+@login_required
+def detalle_mensaje(request, mensaje_id):
+    mensaje = get_object_or_404(Mensaje, id=mensaje_id)
+
+    # Solo destinatario o remitente pueden ver
+    if request.user != mensaje.destinatario and request.user != mensaje.remitente:
+        return redirect('bandeja_entrada')
+
+    # Marcar como leído
+    if not mensaje.leido and request.user == mensaje.destinatario:
+        mensaje.leido = True
+        mensaje.save()
+
+    # Manejar respuesta
+    if request.method == 'POST':
+        contenido_respuesta = request.POST.get('respuesta')
+        if contenido_respuesta:
+            Mensaje.objects.create(
+                remitente=request.user,
+                destinatario=mensaje.remitente,
+                asunto=f"RE: {mensaje.asunto}",
+                contenido=contenido_respuesta
+            )
+            return redirect('bandeja_entrada')
+
+    return render(request, 'mensajes/detalle_mensaje.html', {'mensaje': mensaje})
+
+@login_required
+def mensajes_enviados(request):
+    mensajes = Mensaje.objects.filter(remitente=request.user).order_by('-fecha_envio')
+    return render(request, 'mensajes/mensajes_enviados.html', {'mensajes': mensajes})
+
+
 
 def registroUser(request):
     return render(request, 'inicio/registro.html')
@@ -877,18 +961,30 @@ def chatbot_response(request):
 
             if not user_message:
                 return JsonResponse({"error": "El mensaje está vacío"}, status=400)
-
-            contexto = """
-            Esta es una academia de ajedrez. Actualmente ofrecemos los siguientes cursos: Nivel ADC, intermedio, avanzado y Master.
-            También tenemos estas promociones activas: $20 el curso de ADC y los demás cursos valen $25.
-            Responde a los usuarios con información sobre los cursos y promociones cuando lo pregunten.
-            Actualmente estamos trabajando en una nueva plataforma la cual permitirá a los usuarios acceder a cursos pregrabados con su usuario y contraseña.
-            Para los cursos de ADC los horarios son los lunes y miércoles de 14:00 a 15:00.
-            Para los cursos de intermedio los horarios son los lunes y miércoles de 16:00 a 17:00.
-            Para los cursos Avanzando los horarios son los martes y jueves de 14:00 a 15:00.
-            Para los cursos Master los horarios son los martes y jueves de 17:00 a 18:00.
-            TODOS LOS CURSOS COMPITEN ENTRE SÍ EN LOS TORNEOS LOS DÍAS VIERNES. El estudiante puede unirse en el horario que desee, existe horario de 14:30 a 15:30 y de 18:00 a 19:00.             
-            """
+            if request.user.is_authenticated:
+                contexto = f"""
+                Este es un usuario autenticado dentro de la plataforma educativa Rey Maestro.
+                Puede hacer preguntas relacionadas con su progreso, cursos activos, o cómo avanzar en su nivel.
+                Recuerda que ofrecemos acceso a cursos pregrabados, seguimiento personalizado, y soporte en vivo.
+                También puedes recordarle al estudiante consultar su sección de 'mis cursos', contactar a su profesor, o acceder al foro estudiantil. 
+                Nombre del usuario: {request.user.username}
+                Primer nombre del usuario logeado: {request.user.first_name}
+                email : {request.user.email}
+                Solo en tu primer mensaje puedes empezar salundado tomado su Primer nombre del usuario logeado para que se sienta más comodo el usuario. 
+                Recuerdale que puede si quiere hablar con un asesor real puede dar clic debajo del chat al botón de WhatsApp o escribir directamente al número +593968561304.
+                """
+            else:
+                contexto = """
+                Esta es una academia de ajedrez. Actualmente ofrecemos los siguientes cursos: Nivel ADC, intermedio, avanzado y Master.
+                También tenemos estas promociones activas: $20 el curso de ADC y los demás cursos valen $25.
+                Responde a los usuarios con información sobre los cursos y promociones cuando lo pregunten.
+                Actualmente estamos trabajando en una nueva plataforma la cual permitirá a los usuarios acceder a cursos pregrabados con su usuario y contraseña.
+                Para los cursos de ADC los horarios son los lunes y miércoles de 14:00 a 15:00.
+                Para los cursos de intermedio los horarios son los lunes y miércoles de 16:00 a 17:00.
+                Para los cursos Avanzando los horarios son los martes y jueves de 14:00 a 15:00.
+                Para los cursos Master los horarios son los martes y jueves de 17:00 a 18:00.
+                TODOS LOS CURSOS COMPITEN ENTRE SÍ EN LOS TORNEOS LOS DÍAS VIERNES. El estudiante puede unirse en el horario que desee, existe horario de 14:30 a 15:30 y de 18:00 a 19:00.             
+                """
 
             response = client.chat.completions.create(
                 model="gpt-3.5-turbo",

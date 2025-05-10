@@ -39,4 +39,15 @@ class CursoForm(forms.ModelForm):
             'fecha_publicacion': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
             'descripcion': forms.Textarea(attrs={'rows': 4}),
         }
-        
+
+from user.models import Mensaje
+
+class MensajeForm(forms.ModelForm):
+    class Meta:
+        model = Mensaje
+        fields = ['destinatario', 'asunto', 'contenido']
+        widgets = {
+            'destinatario': forms.Select(attrs={'class': 'form-select'}),
+            'asunto': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Asunto del mensaje'}),
+            'contenido': forms.Textarea(attrs={'class': 'form-control', 'rows': 5, 'placeholder': 'Escribe tu mensaje aquí...'}),
+        }

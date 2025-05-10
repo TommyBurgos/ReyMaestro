@@ -84,8 +84,8 @@
                               <th class="py-3 px-4 text-left">Opciones</th>
                                 <th class="py-3 px-4 text-left">#</th>
                                 <th class="py-3 px-4 text-left">Usuario</th>
-                                <th class="py-3 px-4 text-left">Nombre</th>
-                                <th class="py-3 px-4 text-left">Apellido</th>
+                                <th class="py-3 px-4 text-left">Nombre y apellido</th>
+                                <th class="py-3 px-4 text-left">Ultima conexión</th>
                                 <th class="py-3 px-4 text-left">Correo</th>
                                 <th class="py-3 px-4 text-left">Rol</th>
                                 <th class="py-3 px-4 text-left">Tipo Usuario</th>
@@ -104,8 +104,8 @@
                               </td>
                                 <td class="py-3 px-4">{{ forloop.counter }}</td>
                                 <td class="py-3 px-4">{{ user.username }}</td>
-                                <td class="py-3 px-4">{{ user.first_name }}</td>
-                                <td class="py-3 px-4">{{ user.last_name }}</td>
+                                <td class="py-3 px-4">{{ user.first_name }} - {{ user.last_name }}</td>
+                                <td class="py-3 px-4">{{ user.last_login }}</td>
                                 <td class="py-3 px-4">{{ user.email }}</td>
                                 <td class="py-3 px-4">{{ user.rol }}</td>
                                 <td class="py-3 px-4">{{ user.tipo_usuario }}</td>

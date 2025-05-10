@@ -149,9 +149,11 @@
                           </div>
                           <!--CUARTO CUADRO-->
                           <div class="col col-stats ms-3 ms-sm-0">
+                            <a href="/usAdmin/detalleReportes">
                             <div class="numbers">
                               <p class="card-category">Generar Reportes</p>
                               <h4 class="card-title">PDF/EXCEL</h4>
+                            </a>
                             </div>
                           </div>
                         </div>
@@ -250,7 +252,7 @@
                     <div class="card card-round">
                       <div class="card-header">
                         <div class="card-head-row card-tools-still-right">
-                          <h4 class="card-title">Geolocalización de usuarios</h4>
+                          <h4 class="card-title text-white">Geolocalización de usuarios</h4>
                           <div class="card-tools">
                             <button
                               class="btn btn-icon btn-link btn-primary btn-xs"
@@ -380,7 +382,7 @@
                     <div class="card card-round">
                       <div class="card-body">
                         <div class="card-head-row card-tools-still-right">
-                          <div class="card-title">Usuarios últimas semanas</div>
+                          <div class="card-title text-white">Usuarios últimas semanas</div>
                           <div class="card-tools">
                             <div class="dropdown">
                               <button
@@ -407,17 +409,18 @@
                           </div>
                         </div>
                         <div class="card-list py-4">
+                          {% for ultUsuario in usuarios_recientes %}
                           <div class="item-list">
                             <div class="avatar">
                               <img
-                                src="assets/img/jm_denis.jpg"
+                                src="{{ ultUsuario.imgPerfil.url }}"
                                 alt="..."
                                 class="avatar-img rounded-circle"
                               />
                             </div>
                             <div class="info-user ms-3">
-                              <div class="username">Jimmy Denis</div>
-                              <div class="status">Graphic Designer</div>
+                              <div class="username">{{ ultUsuario.first_name }}</div>
+                              <div class="status">{{ ultUsuario.rol_id }}</div>
                             </div>
                             <button class="btn btn-icon btn-link op-8 me-1">
                               <i class="far fa-envelope"></i>
@@ -426,98 +429,8 @@
                               <i class="fas fa-ban"></i>
                             </button>
                           </div>
-                          <div class="item-list">
-                            <div class="avatar">
-                              <span
-                                class="avatar-title rounded-circle border border-white"
-                                >CF</span
-                              >
-                            </div>
-                            <div class="info-user ms-3">
-                              <div class="username">Chandra Felix</div>
-                              <div class="status">Sales Promotion</div>
-                            </div>
-                            <button class="btn btn-icon btn-link op-8 me-1">
-                              <i class="far fa-envelope"></i>
-                            </button>
-                            <button class="btn btn-icon btn-link btn-danger op-8">
-                              <i class="fas fa-ban"></i>
-                            </button>
-                          </div>
-                          <div class="item-list">
-                            <div class="avatar">
-                              <img
-                                src="assets/img/talha.jpg"
-                                alt="..."
-                                class="avatar-img rounded-circle"
-                              />
-                            </div>
-                            <div class="info-user ms-3">
-                              <div class="username">Talha</div>
-                              <div class="status">Front End Designer</div>
-                            </div>
-                            <button class="btn btn-icon btn-link op-8 me-1">
-                              <i class="far fa-envelope"></i>
-                            </button>
-                            <button class="btn btn-icon btn-link btn-danger op-8">
-                              <i class="fas fa-ban"></i>
-                            </button>
-                          </div>
-                          <div class="item-list">
-                            <div class="avatar">
-                              <img
-                                src="assets/img/chadengle.jpg"
-                                alt="..."
-                                class="avatar-img rounded-circle"
-                              />
-                            </div>
-                            <div class="info-user ms-3">
-                              <div class="username">Chad</div>
-                              <div class="status">CEO Zeleaf</div>
-                            </div>
-                            <button class="btn btn-icon btn-link op-8 me-1">
-                              <i class="far fa-envelope"></i>
-                            </button>
-                            <button class="btn btn-icon btn-link btn-danger op-8">
-                              <i class="fas fa-ban"></i>
-                            </button>
-                          </div>
-                          <div class="item-list">
-                            <div class="avatar">
-                              <span
-                                class="avatar-title rounded-circle border border-white bg-primary"
-                                >H</span
-                              >
-                            </div>
-                            <div class="info-user ms-3">
-                              <div class="username">Hizrian</div>
-                              <div class="status">Web Designer</div>
-                            </div>
-                            <button class="btn btn-icon btn-link op-8 me-1">
-                              <i class="far fa-envelope"></i>
-                            </button>
-                            <button class="btn btn-icon btn-link btn-danger op-8">
-                              <i class="fas fa-ban"></i>
-                            </button>
-                          </div>
-                          <div class="item-list">
-                            <div class="avatar">
-                              <span
-                                class="avatar-title rounded-circle border border-white bg-secondary"
-                                >F</span
-                              >
-                            </div>
-                            <div class="info-user ms-3">
-                              <div class="username">Farrah</div>
-                              <div class="status">Marketing</div>
-                            </div>
-                            <button class="btn btn-icon btn-link op-8 me-1">
-                              <i class="far fa-envelope"></i>
-                            </button>
-                            <button class="btn btn-icon btn-link btn-danger op-8">
-                              <i class="fas fa-ban"></i>
-                            </button>
-                          </div>
+                          {% endfor %}
+                          
                         </div>
                       </div>
                     </div>
@@ -525,7 +438,7 @@
                   <div class="col-md-8">
                     <div class="card card-round">                  
                       <div class="card-body">
-                        <div class="card-title">📚 Últimos Cursos Subidos</div>
+                        <div class="card-title text-white">📚 Últimos Cursos Subidos</div>
                         <div class="card-head-row card-tools-still-right">                      
                           <div class="card-tools">
                             <!--<div class="dropdown">
@@ -555,55 +468,28 @@
                             <div id="cursosCarousel" class="carousel slide" data-bs-ride="carousel">
                                 <div class="carousel-inner">
                                     <!-- Curso 1 -->
-                                    <div class="carousel-item active">
-                                        <div class="row">
+                                    {% for curso in cursos %}
+                                    <div class="carousel-item active relative group">
+                                        <div class="row">                                          
                                             <div class="col-md-6">
-                                                <iframe class="w-100" height="315" src="https://www.youtube.com/embed/rfscVS0vtbw" 
-                                                    title="Curso de Python desde Cero" frameborder="0" 
-                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                                    allowfullscreen>
-                                                </iframe>
+                                              <a href="{% url 'detalle_curso' curso.id %}" class="block bg-white rounded-2xl shadow-lg hover:shadow-2xl transition overflow-hidden text-black">
+                                                {% if curso.primer_video %}
+                                                <video class="w-full h-full object-cover w-100" muted preload="metadata">
+                                                  <source src="{{ curso.primer_video.url_contenido }}" type="video/mp4">
+                                                </video>
+                                                {% else %}
+                                                  <img src="https://via.placeholder.com/640x360?text=Curso+Sin+Video" alt="Sin imagen de video" class="w-full h-full object-cover">
+                                                {% endif %}</a>
                                             </div>
+                                          
                                             <div class="col-md-6 d-flex flex-column justify-content-center">
-                                                <h4>Curso de Python desde Cero</h4>
-                                                <p>Aprende los fundamentos de Python con ejercicios prácticos y proyectos reales.</p>
+                                              <h4 class="font-bold text-xl mb-1">{{ curso.titulo }}</h4>
+                                              <p class="text-sm text-gray-700 mb-2 text-white">{{ curso.descripcion|truncatewords:15 }}</p>
+                                              <p class="text-xs text-gray-500">Publicado: {{ curso.fecha_publicacion|date:"d M Y H:i" }}</p>
                                             </div>
                                         </div>
                                     </div>
-                        
-                                    <!-- Curso 2 -->
-                                    <div class="carousel-item">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <iframe class="w-100" height="315" src="https://www.youtube.com/embed/UmljXZIypDc" 
-                                                    title="Curso de Django Avanzado" frameborder="0" 
-                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                                    allowfullscreen>
-                                                </iframe>
-                                            </div>
-                                            <div class="col-md-6 d-flex flex-column justify-content-center">
-                                                <h4>Curso de Django Avanzado</h4>
-                                                <p>Desarrolla aplicaciones web escalables con Django y buenas prácticas.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                        
-                                    <!-- Curso 3 -->
-                                    <div class="carousel-item">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <iframe class="w-100" height="315" src="https://www.youtube.com/embed/JMUxmLyrhSk" 
-                                                    title="Curso de Inteligencia Artificial" frameborder="0" 
-                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                                    allowfullscreen>
-                                                </iframe>
-                                            </div>
-                                            <div class="col-md-6 d-flex flex-column justify-content-center">
-                                                <h4>Curso de Inteligencia Artificial</h4>
-                                                <p>Explora el mundo de la IA con Python, redes neuronales y Machine Learning.</p>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    {% endfor %}                                    
                                 </div>
                         
                                 <!-- Controles del Carrusel -->
@@ -623,7 +509,7 @@
                     <div class="card card-round">
                       <div class="card-header">
                         <div class="card-head-row card-tools-still-right">
-                          <div class="card-title">Transaction History</div>
+                          <div class="card-title text-white">Transaction History</div>
                           <div class="card-tools">
                             <div class="dropdown">
                               <button

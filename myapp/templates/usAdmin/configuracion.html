@@ -51,9 +51,79 @@
             <!-- Sidebar -->
             {% include 'usAdmin/baseAside.html' %}
 
-            <main class="flex-1 p-6 text-white">
-                <div class="page-inner">
-                    <h2>Configuración General</h2>
+            <main class="flex-1 p-6 bg-gray-100 text-gray-800 font-sans">
+                <!-- Header -->
+                <header class="bg-white shadow p-4 flex items-center justify-between">
+                    <h1 class="text-2xl font-bold">⚙️ Configuración General del Sistema</h1>
+                    <p class="text-sm text-gray-500">Administrador</p>
+                </header>
+                <div class="page-inner flex-1 p-6 space-y-8 text-black">
+                     <!-- Logs -->
+                    <section id="actividad" class="bg-white rounded-xl shadow p-6">
+                        <h2 class="text-xl font-semibold mb-2">📋 Logs de actividad</h2>
+                        <p class="text-gray-500 mb-4">Consulta los registros de acceso, modificaciones y acciones realizadas por los usuarios.</p>
+                        <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Ver registros</button>
+                    </section>
+
+                    <!-- Pasarela de pagos -->
+                    <section id="pagos" class="bg-white rounded-xl shadow p-6">
+                        <h2 class="text-xl font-semibold mb-2">💳 Configuración de pasarela de pagos</h2>
+                        <p class="text-gray-500 mb-4">Agrega o edita las credenciales de tus métodos de pago.</p>
+                        <div class="space-y-2">
+                        <label class="block">
+                            <span class="text-gray-700">Plataforma</span>
+                            <select class="mt-1 w-full border-gray-300 rounded">
+                            <option>Stripe</option>
+                            <option>PayPal</option>
+                            </select>
+                        </label>
+                        <label class="block">
+                            <span class="text-gray-700">Clave pública</span>
+                            <input type="text" class="mt-1 w-full border-gray-300 rounded" />
+                        </label>
+                        <label class="block">
+                            <span class="text-gray-700">Clave privada</span>
+                            <input type="password" class="mt-1 w-full border-gray-300 rounded" />
+                        </label>
+                        <button class="mt-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Guardar configuración</button>
+                        </div>
+                    </section>
+
+                    <!-- Visual -->
+                    <section id="visual" class="bg-white rounded-xl shadow p-6">
+                        <h2 class="text-xl font-semibold mb-2">🎨 Personalización visual</h2>
+                        <p class="text-gray-500 mb-4">Cambia el logo, los colores institucionales y el texto de bienvenida.</p>
+                        <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block mb-1">Logo actual:</label>
+                            <img src="/media/config/logo.png" alt="Logo" class="h-16" />
+                            <input type="file" class="mt-2" />
+                        </div>
+                        <div>
+                            <label class="block mb-1">Color primario:</label>
+                            <input type="color" value="#004aad" class="w-12 h-12 rounded" />
+                        </div>
+                        <div class="col-span-2">
+                            <label class="block mb-1">Texto de bienvenida:</label>
+                            <textarea rows="3" class="w-full border-gray-300 rounded"></textarea>
+                        </div>
+                        </div>
+                        <button class="mt-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Guardar cambios</button>
+                    </section>
+
+                    <!-- Mantenimiento -->
+                    <section id="mantenimiento" class="bg-white rounded-xl shadow p-6">
+                        <h2 class="text-xl font-semibold mb-2">🚧 Modo mantenimiento</h2>
+                        <p class="text-gray-500 mb-4">Activa el modo mantenimiento para impedir el acceso temporal de usuarios.</p>
+                        <div class="flex items-center space-x-4">
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" class="form-checkbox h-5 w-5 text-red-600" />
+                            <span>Activar mantenimiento</span>
+                        </label>
+                        <input type="text" placeholder="Mensaje personalizado" class="flex-1 border-gray-300 rounded px-3 py-1" />
+                        </div>
+                        <button class="mt-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Aplicar</button>
+                    </section>
                 </div>
             </main>
 
