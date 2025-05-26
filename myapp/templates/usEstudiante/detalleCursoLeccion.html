@@ -828,23 +828,25 @@
             <div class="video-column">
                 <div class="video-container">
                     <div class="video-header">
-                        <h1>Clase 5 de 5 - {{ curso.titulo }}</h1>
-                        <h2>{{ curso.descripcion|truncatewords:15 }}</h2>
+                        <h1>Clase 5 de 5 - {{ leccion.titulo }}</h1>
+                        <h2>{{ leccion.descripcion|truncatewords:15 }}</h2>
                         <div class="instructor">
                             <h3>MAGNUS CARLSEN</h3>
                         </div>
                     </div>
                     
                     <div class="video-wrapper">
-                        {% if contenidos %}
-                        <div class="sticky top-20">
-                        <video controls class="rounded-xl shadow-xl w-full">
-                            <source src="{{ contenidos.0.url_contenido }}" type="video/mp4">
-                            Tu navegador no soporta la reproducción de video.
+                        {% if leccion.tipo_contenido == 'video' %}
+                        <video width="300px" controls class="w-full rounded-xl shadow-xl">
+                            <source src="{{ leccion.url_contenido }}" type="video/mp4">
+                            Tu navegador no soporta video.
                         </video>
+                        {% elif leccion.tipo_contenido == 'documento' %}
+                        <a href="{{ leccion.url_contenido }}" target="_blank" class="text-blue-400 underline text-lg">📄 Abrir documento</a>
+                        {% elif leccion.tipo_contenido == 'texto' %}
+                        <div class="bg-gray-800 p-4 rounded-lg shadow">
+                            <p>{{ leccion.descripcion }}</p>
                         </div>
-                        {% else %}
-                            <p class="text-gray-400 italic">Este curso no tiene video de portada.</p>
                         {% endif %}
                     </div>
 
@@ -854,7 +856,7 @@
                         <p>Nota: Esta estrategia fue utilizada por Magnus Carlsen en el Campeonato Mundial de 2018.</p>
                         <button class="more-info-btn"><i class="fas fa-chevron-right"></i> Más info acá</button>
                         <div class="additional-info" id="additionalInfo">
-                            <p>{{ curso.descripcion }}</p>
+                            <p>{{ leccion.descripcion }}</p>
                         </div>
                     </div>
 
@@ -882,43 +884,36 @@
                         <span class="progress-title">Progreso del curso</span>
                         <span class="progress-percent">100%</span>
                     </div>
-                    {% for modulo in curso.modulo_set.all|dictsort:"orden" %}
                     <div class="classes-progress">
-                        <h3>{{ modulo.titulo }}</h3>  
-                        {% if modulo.leccion_set.all %} 
-                            {% for leccion in modulo.leccion_set.all|dictsort:"orden" %}                     
-                            <div class="class-progress-item">
-                                <div class="class-number-circle">1</div>
-                                {% if leccion.tipo_contenido == 'video' %}
+                        {% for clase in otras_lecciones %}
+                        <div class="class-progress-item">
+                            <div class="class-number-circle">{{ forloop.counter }}</div>
+                            {% if clase.tipo_contenido == 'video' %}
                                 <div class="class-video">
-                                        {% if curso.primer_video %}
+                                        {% if clase.url_contenido %}
                                         <video class="w-full h-full object-cover" muted preload="metadata">
-                                        <source src="{{ curso.primer_video.url_contenido }}" type="video/mp4">
+                                        <source src="{{ clase.url_contenido }}" type="video/mp4">
                                         </video>
                                         {% else %}
                                         <img src="https://via.placeholder.com/640x360?text=Curso+Sin+Video" alt="Sin video" class="w-full h-full object-cover">
                                         {% endif %}
                                 </div>
-                                {% elif leccion.tipo_contenido == 'documento' %}
+                                {% elif clase.tipo_contenido == 'documento' %}
                                 <span class="text-sm text-gray-400">📄 Doc</span>
-                                {% elif leccion.tipo_contenido == 'texto' %}
+                                {% elif clase.tipo_contenido == 'texto' %}
                                     <span class="text-sm text-gray-400">📝 Texto</span>
                                 {% endif %}
-                                <div class="class-info">
-                                    <div class="class-name">
-                                        <a href="{% url 'ver_leccion_Estudiante' leccion.id %}" class="block hover:underline">
-                                        {{ leccion.titulo }}
-                                        </a>                                
-                                    </div>
-                                    <div class="class-duration">11:09</div>
+                            <div class="class-info">
+                                <div class="class-name">
+                                    <a href="{% url 'ver_leccion_Estudiante' clase.id %}" class="block hover:underline">
+                                    {{ clase.titulo }}
+                                    </a>
                                 </div>
+                                <div class="class-duration">11:09</div>
                             </div>
-                            {% endfor %}
-                        {% else %}
-                        <p class="text-gray-500 italic">Este módulo no tiene lecciones aún.</p>
-                        {% endif %}                                            
+                        </div>
+                        {% endfor %}                                              
                     </div>
-                    {% endfor %}
                     <div class="progress-actions">
                         <button class="progress-btn"><i class="fas fa-poll"></i> Encuesta de satisfacción</button>
                         <button class="progress-btn"><i class="fas fa-edit"></i> Tomar examen</button>

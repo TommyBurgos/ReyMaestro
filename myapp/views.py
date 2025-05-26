@@ -39,8 +39,6 @@ def inicio(request):
 @role_required('Administrador')
 def inicioAdmin(request):
     user = request.user
-    
-    
     imgPerfil=user.imgPerfil    
     # 1. Cantidad de usuarios cuyo rol es igual a 2
     # Fecha hace dos semanas
@@ -805,7 +803,41 @@ def accesoDenegado(request):
 
 @role_required('Estudiante')
 def inicioEstudiante(request):
-    return render(request, 'usEstudiante/index.html')
+    user = request.user
+    imgPerfil=user.imgPerfil    
+    # 1. Cantidad de usuarios cuyo rol es igual a 2
+    # Fecha hace dos semanas    
+    #Ultimos cursos creados
+    cursos = Curso.objects.all().order_by('-fecha_creacion')
+    # Usuarios creados en las últimas dos semanas    
+    context = {                   
+        'imgPerfil': imgPerfil,
+        'cursos':cursos,        
+        'usuario':user.username,        
+    }    
+    return render(request, 'usEstudiante/index.html', context)    
+
+@role_required('Estudiante')
+def detalle_curso_Estudiante(request, curso_id):
+    curso = get_object_or_404(Curso, id=curso_id)
+    contenidos = Contenido.objects.filter(curso=curso, tipo_contenido='video')
+
+    return render(request, 'usEstudiante/detalleCurso.html', {
+        'curso': curso,
+        'contenidos': contenidos
+    })
+
+@role_required('Estudiante')
+def ver_leccion_Estudiante(request, leccion_id):
+    leccion = get_object_or_404(Leccion, id=leccion_id)
+    modulo = leccion.modulo
+    otras_lecciones = modulo.leccion_set.all().order_by('orden')
+
+    return render(request, 'usEstudiante/detalleCursoLeccion.html', {
+        'leccion': leccion,
+        'modulo': modulo,
+        'otras_lecciones': otras_lecciones,
+    })
 
 @role_required('Estudiante')
 def chatEstudiante(request):
