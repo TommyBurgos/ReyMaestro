@@ -52,6 +52,7 @@ urlpatterns = [
     #Estudiantes
     path('detalleCurso/Estudiante/<int:curso_id>/', views.detalle_curso_Estudiante, name='detalle_curso_Estudiante'),
     path('leccion/Estudiante/<int:leccion_id>/ver/', views.ver_leccion_Estudiante, name='ver_leccion_Estudiante'),#Para vista Estudiante
+    path('usEstudiante/cursoProceso', views.cursos_en_progreso, name="cursoProceso"),
     path('usEstudiante/chat', views.chatEstudiante, name="student_chat"),
     path('usEstudiante/notificaciones', views.notificacionesEstudiante, name="student_notificaciones"),
     path('usEstudiante/progreso', views.progresoEstudiante, name="student_progreso"),

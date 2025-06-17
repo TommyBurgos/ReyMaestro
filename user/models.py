@@ -32,6 +32,16 @@ class Pago(models.Model):
     metodo_pago = models.CharField(max_length=50)
     estado_pago = models.CharField(max_length=20, choices=[('pendiente', 'Pendiente'), ('completado', 'Completado'), ('fallido', 'Fallido')], default='pendiente')
 
+#MODELO PARA ESCUELAS
+class Escuela(models.Model):
+    nombre = models.CharField(max_length=50, unique=True)
+    descripcion = models.TextField(blank=True)
+    icono = models.ImageField(upload_to='iconosEscuelas/', blank=True, null=True)  # Opcional
+
+    def __str__(self):
+        return self.nombre
+
+
 # Modelo de Cursos
 class Curso(models.Model):
     titulo = models.CharField(max_length=200)
@@ -40,6 +50,8 @@ class Curso(models.Model):
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     fecha_publicacion = models.DateTimeField(null=True, blank=True)
     destacado = models.BooleanField(default=False)
+    escuela = models.ForeignKey(Escuela, on_delete=models.SET_NULL, null=True, blank=True)
+
     estado = models.CharField(
         max_length=20,
         choices=[('borrador', 'Borrador'), ('publicado', 'Publicado'), ('inactivo', 'Inactivo')],
@@ -152,12 +164,19 @@ class Inscripcion(models.Model):
 
 
 
-# Modelo de Progreso de Usuarios
 class ProgresoUsuario(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
-    contenido = models.ForeignKey(Contenido, on_delete=models.CASCADE)
+    contenido = models.ForeignKey(Contenido, on_delete=models.CASCADE, null=True, blank=True)
+    leccion = models.ForeignKey(Leccion, on_delete=models.CASCADE, null=True, blank=True)
     completado = models.BooleanField(default=False)
     fecha_actualizacion = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        if self.contenido:
+            return f"{self.usuario.username} - Contenido: {self.contenido.titulo}"
+        if self.leccion:
+            return f"{self.usuario.username} - Lección: {self.leccion.titulo}"
+        return f"{self.usuario.username} - Sin contenido"
 
 # Modelo de Calificaciones
 class Calificacion(models.Model):
@@ -171,14 +190,6 @@ class RegistroConexion(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     fecha_conexion = models.DateTimeField(auto_now_add=True)
     ip_address = models.GenericIPAddressField(null=True, blank=True)  # Opcional para registrar IP
-
-def actualizar_progreso(inscripcion):
-    total_contenidos = Contenido.objects.filter(curso=inscripcion.curso).count()
-    completados = ProgresoUsuario.objects.filter(usuario=inscripcion.usuario, completado=True).count()
-    progreso = (completados / total_contenidos) * 100
-    inscripcion.progreso = progreso
-    inscripcion.save()
-
 
 class Foro(models.Model):
     curso = models.ForeignKey(Curso, on_delete=models.CASCADE)

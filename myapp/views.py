@@ -817,27 +817,74 @@ def inicioEstudiante(request):
     }    
     return render(request, 'usEstudiante/index.html', context)    
 
+def actualizar_progreso(inscripcion):
+    total_contenidos = Contenido.objects.filter(curso=inscripcion.curso).count()
+    total_lecciones = Leccion.objects.filter(modulo__curso=inscripcion.curso).count()
+    total_items = total_contenidos + total_lecciones
+
+    completados_contenido = ProgresoUsuario.objects.filter(
+        usuario=inscripcion.usuario,
+        contenido__curso=inscripcion.curso,
+        completado=True
+    ).count()
+
+    completados_leccion = ProgresoUsuario.objects.filter(
+        usuario=inscripcion.usuario,
+        leccion__modulo__curso=inscripcion.curso,
+        completado=True
+    ).count()
+
+    progreso = ((completados_contenido + completados_leccion) / total_items) * 100 if total_items > 0 else 0
+    inscripcion.progreso = progreso
+    inscripcion.save()
+
+
 @role_required('Estudiante')
 def detalle_curso_Estudiante(request, curso_id):
     curso = get_object_or_404(Curso, id=curso_id)
     contenidos = Contenido.objects.filter(curso=curso, tipo_contenido='video')
+    inscripcion, creada = Inscripcion.objects.get_or_create(
+        usuario=request.user,
+        curso=curso,
+        defaults={'estado': 'en_progreso'}
+    )
 
     return render(request, 'usEstudiante/detalleCurso.html', {
         'curso': curso,
-        'contenidos': contenidos
+        'contenidos': contenidos,
+        'inscripcion': inscripcion
     })
 
 @role_required('Estudiante')
 def ver_leccion_Estudiante(request, leccion_id):
     leccion = get_object_or_404(Leccion, id=leccion_id)
     modulo = leccion.modulo
+    curso = modulo.curso
     otras_lecciones = modulo.leccion_set.all().order_by('orden')
+
+    # 1. Registrar progreso de esta lección si no está ya completado
+    ProgresoUsuario.objects.get_or_create(
+        usuario=request.user,
+        leccion=leccion,
+        defaults={'completado': True}
+    )
+
+    # 2. Asegurar que exista inscripción
+    inscripcion, creada = Inscripcion.objects.get_or_create(
+        usuario=request.user,
+        curso=curso,
+        defaults={'estado': 'en_progreso'}
+    )
+
+    # 3. Actualizar progreso general del curso
+    actualizar_progreso(inscripcion)
 
     return render(request, 'usEstudiante/detalleCursoLeccion.html', {
         'leccion': leccion,
         'modulo': modulo,
         'otras_lecciones': otras_lecciones,
     })
+
 
 @role_required('Estudiante')
 def chatEstudiante(request):
@@ -850,6 +897,39 @@ def notificacionesEstudiante(request):
 @role_required('Estudiante')
 def progresoEstudiante(request):
     return render(request, 'usEstudiante/progreso.html')
+
+
+#PROBANDO CONTINUAR VIENDO
+def obtener_ultimo_item_pendiente(usuario, curso):
+    # Buscar primer contenido no completado
+    contenidos = Contenido.objects.filter(curso=curso).order_by('orden')
+    for c in contenidos:
+        if not ProgresoUsuario.objects.filter(usuario=usuario, contenido=c, completado=True).exists():
+            return c
+
+    # Buscar primera lección no completada
+    lecciones = Leccion.objects.filter(modulo__curso=curso).order_by('modulo__orden', 'orden')
+    for l in lecciones:
+        if not ProgresoUsuario.objects.filter(usuario=usuario, leccion=l, completado=True).exists():
+            return l
+
+    return None  # Todo completado
+
+
+def cursos_en_progreso(request):
+    inscripciones = Inscripcion.objects.filter(usuario=request.user, estado='en_progreso')
+    cursos_con_punto = []
+
+    for inscripcion in inscripciones:
+        contenido_pendiente = obtener_ultimo_item_pendiente(request.user, inscripcion.curso)
+        cursos_con_punto.append({
+            'curso': inscripcion.curso,
+            'progreso': inscripcion.progreso,
+            'contenido': contenido_pendiente
+        })
+
+    return render(request, 'usEstudiante/continuar_viendo.html', {'cursos_con_punto': cursos_con_punto})
+
 
 @role_required('Estudiante')
 def rutasEstudiante(request):
