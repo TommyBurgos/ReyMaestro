@@ -18,6 +18,9 @@ urlpatterns = [
     path('curso/<int:curso_id>/modulo/nuevo/', views.crear_modulo, name='crear_modulo'),
     path('modulo/<int:modulo_id>/leccion/nueva/', views.crear_leccion, name='crear_leccion'),
 
+    path('s3/upload-url/', views.get_presigned_post, name='get_presigned_post'),
+
+
 
     path('usAdmin/detallePagos', views.detallePagos, name="detallePagos-adm"),
 

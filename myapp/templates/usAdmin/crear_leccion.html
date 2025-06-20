@@ -109,6 +109,83 @@
                 </form>
             </div>
             
+            <!--SCRIPT DE INTENTO DE PRUEBA DE SUBIDA DIRECTA A AWS-->
+            <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const form = document.querySelector('form');
+                const archivoInput = document.querySelector('input[name="archivo"]');
+                const tipoInput = document.querySelector('select[name="tipo"]');
+
+                form.addEventListener('submit', async function (e) {
+                    const tipo = tipoInput.value;
+                    const archivo = archivoInput.files[0];
+
+                    if ((tipo === 'video' || tipo === 'documento') && archivo) {
+                        e.preventDefault();
+
+                        console.log("🚀 Iniciando solicitud de firma S3");
+
+                        const formData = new FormData();
+                        formData.append('file_name', archivo.name);
+                        formData.append('file_type', archivo.type);
+
+                        try {
+                            const res = await fetch("{% url 'get_presigned_post' %}", {
+                                method: 'POST',
+                                body: formData
+                            });
+
+                            if (!res.ok) {
+                                console.error("❌ Error al obtener firma S3:", await res.text());
+                                alert("Error al generar firma de subida");
+                                return;
+                            }
+
+                            const data = await res.json();
+                            const s3Data = data.data;
+                            const urlFinal = data.url_final;
+
+                            console.log("✅ Firma obtenida:", s3Data);
+                            console.log("📦 Subiendo archivo a S3 en:", s3Data.url);
+
+                            const uploadForm = new FormData();
+                            Object.entries(s3Data.fields).forEach(([k, v]) => {
+                                uploadForm.append(k, v);
+                            });
+                            uploadForm.append('file', archivo);  // Este debe llamarse así sí o sí
+
+                            const uploadRes = await fetch(s3Data.url, {
+                                method: 'POST',
+                                body: uploadForm
+                            });
+
+                            if (!uploadRes.ok) {
+                                const text = await uploadRes.text();
+                                console.error("❌ Error al subir a S3:", text);
+                                alert("Error al subir a S3");
+                                return;
+                            }
+
+                            console.log("✅ Archivo subido correctamente. URL:", urlFinal);
+
+                            const urlField = document.createElement('input');
+                            urlField.type = 'hidden';
+                            urlField.name = 'url_contenido';
+                            urlField.value = urlFinal;
+                            form.appendChild(urlField);
+
+                            archivoInput.remove();  // Eliminar para que no se vuelva a subir por Django
+                            form.submit();  // Enviar formulario real
+                        } catch (error) {
+                            console.error("❌ Excepción inesperada:", error);
+                            alert("Error inesperado al subir archivo");
+                        }
+                    }
+                });
+            });
+            </script>
+
+
             <script>
                 function toggleCampos(valor) {
                     const campo = document.getElementById("campoArchivo");

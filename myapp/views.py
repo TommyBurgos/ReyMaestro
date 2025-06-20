@@ -335,6 +335,8 @@ def crear_modulo(request, curso_id):
 
 @role_required('Administrador')
 @login_required
+@role_required('Administrador')
+@login_required
 def crear_leccion(request, modulo_id):
     modulo = get_object_or_404(Modulo, id=modulo_id)
 
@@ -342,32 +344,40 @@ def crear_leccion(request, modulo_id):
         titulo = request.POST.get('titulo', '').strip()
         tipo = request.POST.get('tipo')
         descripcion = request.POST.get('descripcion', '').strip()
-        archivo = request.FILES.get('archivo')
-        imagen = request.FILES.get('imagen')
         orden = request.POST.get('orden', 1)
+        imagen = request.FILES.get('imagen')
+
+        # 👇 Aquí viene lo nuevo:
+        url_contenido = request.POST.get('url_contenido')  # viene desde JS tras subir a S3
+        archivo = request.FILES.get('archivo')  # fallback por si no se usó subida directa
 
         if not titulo or not tipo:
             messages.error(request, "Título y tipo de contenido son obligatorios.")
             return redirect('crear_leccion', modulo_id=modulo.id)
 
-        url_contenido = None
-        archivo_guardado = None
+        # En caso de video o documento, validar que haya URL o archivo
+        if tipo in ['video', 'documento']:
+            if not url_contenido and not archivo:
+                messages.error(request, "Debes subir un archivo o proporcionar una URL de contenido.")
+                return redirect('crear_leccion', modulo_id=modulo.id)
 
-        if tipo in ['video', 'documento'] and archivo:
-            ext = archivo.name.split('.')[-1]
-            nombre_archivo = f"{tipo}s/{uuid.uuid4()}.{ext}"
-            s3_storage = S3VideoStorage()
-            ruta = s3_storage.save(nombre_archivo, archivo)
-            url_contenido = s3_storage.url(ruta)
+            # Fallback: si no se usó subida directa, subir desde Django a S3
+            if not url_contenido and archivo:
+                ext = archivo.name.split('.')[-1]
+                nombre_archivo = f"{tipo}s/{uuid.uuid4()}.{ext}"
+                s3_storage = S3VideoStorage()
+                ruta = s3_storage.save(nombre_archivo, archivo)
+                url_contenido = s3_storage.url(ruta)
 
+        # Crear la lección
         nueva_leccion = Leccion.objects.create(
             modulo=modulo,
             titulo=titulo,
             tipo_contenido=tipo,
             descripcion=descripcion,
             url_contenido=url_contenido,
-            archivo=None,  # Puedes dejar como None si ya guardas solo URL
-            imagen=imagen,  # Esto se guarda local en MEDIA_ROOT
+            archivo=None,  # Si quieres puedes conservar como backup local en MEDIA_ROOT
+            imagen=imagen,
             orden=orden
         )
 
@@ -375,6 +385,53 @@ def crear_leccion(request, modulo_id):
         return redirect('detalle_curso', curso_id=modulo.curso.id)
 
     return render(request, 'usAdmin/crear_leccion.html', {'modulo': modulo})
+
+
+#PRUEBA DE SUBIDA DIRECTA A AWS
+import boto3
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
+from uuid import uuid4
+import mimetypes
+
+@csrf_exempt  # Solo si la vista se usa vía fetch
+@login_required
+def get_presigned_post(request):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Método no permitido'}, status=405)
+
+    file_name = request.POST.get('file_name')
+    file_type = request.POST.get('file_type')
+
+    if not file_name or not file_type:
+        return JsonResponse({'error': 'Faltan datos'}, status=400)
+
+    s3 = boto3.client('s3',
+        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+        region_name=settings.AWS_S3_REGION_NAME
+    )
+
+    ext = file_name.split('.')[-1]
+    new_file_name = f"lecciones/{uuid4()}.{ext}"
+
+    presigned_post = s3.generate_presigned_post(
+        Bucket=settings.AWS_STORAGE_BUCKET_NAME,
+        Key=new_file_name,
+        Fields={"Content-Type": file_type},
+        Conditions=[
+            {"Content-Type": file_type},
+            ["content-length-range", 0, 838860800]  # hasta 800MB
+        ],
+        ExpiresIn=3600
+    )
+
+    return JsonResponse({
+        'data': presigned_post,
+        'url_final': f"https://{settings.AWS_STORAGE_BUCKET_NAME}.s3.{settings.AWS_S3_REGION_NAME}.amazonaws.com/{new_file_name}"
+    })
+
 
 
 @role_required('Administrador')
